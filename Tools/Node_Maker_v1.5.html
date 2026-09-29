@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Virtual Tour Node Editor & Asset Manager (Node Maker v1.4)</title>
+  <!-- JSZip for Universal ZIP Export Fallback -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: #181818; color: #e0e0e0; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+
+    /* Top Navigation Tabs */
+    header { background: #222; border-bottom: 1px solid #333; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; height: 50px; flex-shrink: 0; }
+    .brand { font-weight: bold; font-size: 16px; color: #007acc; display: flex; align-items: center; gap: 8px; }
+    .tabs { display: flex; height: 100%; }
+    .tab-btn { background: transparent; border: none; color: #888; padding: 0 20px; font-size: 13px; font-weight: 600; cursor: pointer; border-bottom: 3px solid transparent; transition: all 0.2s; }
+    .tab-btn:hover { color: #fff; background: #2a2a2a; }
+    .tab-btn.active { color: #00aaff; border-bottom-color: #00aaff; background: #1e1e1e; }
+
+    /* View Containers */
+    .view-container { flex: 1; display: none; height: calc(100vh - 50px); overflow: hidden; }
+    .view-container.active { display: flex; }
+
+    /* TAB 1: NODE EDITOR LAYOUT */
+    #canvas-container { flex: 1; overflow: auto; padding: 20px; background: #121212; position: relative; display: flex; justify-content: center; align-items: center; }
+    canvas { border: 1px solid #333; cursor: crosshair; background: #1a1a1a; box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
+    #sidebar { width: 420px; background: #222; border-left: 1px solid #333; padding: 16px; display: flex; flex-direction: column; gap: 12px; overflow-y: auto; flex-shrink: 0; }
+
+    /* UI Panels */
+    .panel { background: #1a1a1a; padding: 12px; border-radius: 6px; border: 1px solid #2e2e2e; display: flex; flex-direction: column; gap: 8px; }
+    .panel-title { font-size: 12px; font-weight: bold; color: #00aaff; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px; display: flex; justify-content: space-between; align-items: center; }
+    
+    label { font-size: 11px; color: #aaa; margin-bottom: -4px; }
+    input, select, textarea { padding: 8px; background: #282828; border: 1px solid #444; color: #fff; border-radius: 4px; font-size: 12px; outline: none; }
+    input:focus, select:focus, textarea:focus { border-color: #007acc; }
+    textarea { height: 120px; font-family: monospace; font-size: 11px; resize: vertical; color: #00ff66; transition: border-color 0.2s; }
+
+    .row { display: flex; gap: 8px; }
+    .row > * { flex: 1; }
+
+    button { padding: 8px 12px; background: #007acc; color: white; border: none; cursor: pointer; font-weight: bold; border-radius: 4px; font-size: 12px; transition: background 0.2s; }
+    button:hover { background: #005999; }
+    button.success { background: #28a745; } button.success:hover { background: #218838; }
+    button.danger { background: #dc3545; } button.danger:hover { background: #c82333; }
+    button.secondary { background: #444; } button.secondary:hover { background: #555; }
+
+    .legend { display: flex; gap: 8px; font-size: 10px; flex-wrap: wrap; background: #121212; padding: 6px; border-radius: 4px; border: 1px solid #282828; }
+    .legend-item { display: flex; align-items: center; gap: 4px; }
+    .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+
+    /* Node Inspector Panel */
+    .inspector-panel { border-color: #007acc; background: #16222e; }
+    .thumb-preview { width: 100%; height: 90px; object-fit: cover; border-radius: 4px; border: 1px solid #444; background: #000; display: none; }
+
+    /* TAB 2: 360 ASSET RENAMER LAYOUT */
+    #renamer-container { flex: 1; padding: 24px; overflow-y: auto; background: #181818; display: flex; flex-direction: column; gap: 16px; }
+    .renamer-toolbar { display: flex; gap: 12px; background: #222; padding: 16px; border-radius: 8px; border: 1px solid #333; align-items: center; justify-content: space-between; flex-wrap: wrap; }
+    
+    .asset-grid { display: flex; flex-direction: column; gap: 8px; }
+    .asset-row { display: flex; align-items: center; gap: 16px; background: #222; border: 1px solid #333; padding: 12px; border-radius: 6px; }
+    .asset-info { flex: 1; display: flex; flex-direction: column; gap: 4px; }
+    .asset-id { font-weight: bold; color: #00aaff; font-size: 13px; }
+    .asset-path { font-size: 11px; color: #888; font-family: monospace; }
+    
+    .drop-zone { width: 220px; height: 60px; border: 2px dashed #555; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #aaa; text-align: center; padding: 4px; cursor: pointer; transition: all 0.2s; background: #1a1a1a; position: relative; overflow: hidden; }
+    .drop-zone:hover, .drop-zone.dragover { border-color: #00aaff; background: #202b36; color: #fff; }
+    .drop-zone img { width: 100%; height: 100%; object-fit: cover; position: absolute; top:0; left:0; opacity: 0.6; }
+    .drop-zone span { position: relative; z-index: 2; font-weight: bold; text-shadow: 0 1px 3px rgba(0,0,0,0.8); }
+  </style>
+</head>
+<body>
+
+  <!-- Header & Navigation -->
+  <header>
+    <div class="brand">📌 Node Maker v1.4 - Map Builder & Asset CMS</div>
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('editor')">Tab 1: Node Generator & Map Editor</button>
+      <button class="tab-btn" onclick="switchTab('renamer')">Tab 2: 360 Asset Renamer & Sync</button>
+    </div>
+  </header>
+
+  <!-- ==================== TAB 1: NODE MAP EDITOR ==================== -->
+  <div id="view-editor" class="view-container active">
+    
+    <!-- Floorplan Canvas Workspace -->
+    <div id="canvas-container">
+      <canvas id="floorplan"></canvas>
+    </div>
+
+    <!-- Administrative Sidebar Controls -->
+    <div id="sidebar">
+      
+      <!-- 1. Floorplan Setup -->
+      <div class="panel">
+        <div class="panel-title">1. Floorplan Configuration</div>
+        <label>Select Floor Plan Image</label>
+        <input type="file" id="fileInput" accept="image/*">
+        <div class="row">
+          <div>
+            <label>Floor ID</label>
+            <input type="text" id="floorPrefix" value="f1" placeholder="e.g. f1">
+          </div>
+          <div>
+            <label>Px / Meter Ratio</label>
+            <input type="number" id="pxPerMeter" value="50">
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. Path Vector Settings & Path Re-mapper -->
+      <div class="panel">
+        <div class="panel-title">2. Pathing & Image Template Engine</div>
+        <label>Global Max Path Connection Distance (Meters)</label>
+        <input type="number" id="maxConnectDist" value="3.5" step="0.5">
+
+        <label>Panorama Path Schema Template</label>
+        <input type="text" id="pathTemplateInput" value="/assets/360/{floor}/node_{num}.jpg" placeholder="/assets/360/{floor}/node_{num}.jpg">
+        
+        <button class="secondary" onclick="applyBulkPathRemap()">⚡ Bulk Re-map All Image Paths</button>
+      </div>
+
+      <!-- 3. Zone Preset Manager -->
+      <div class="panel">
+        <div class="panel-title">3. Zone Preset Manager (Wall Isolation)</div>
+        <label>Select Active Zone</label>
+        <select id="zoneSelect"></select>
+
+        <div class="row">
+          <input type="text" id="newZoneInput" placeholder="New Zone ID (e.g. reading_room)">
+          <button class="secondary" onclick="addNewZone()">+ Add Zone</button>
+        </div>
+
+        <label>Active Node Type</label>
+        <select id="nodeTypeSelect">
+          <option value="standard">Standard Path (Red)</option>
+          <option value="door">Doorway / Gateway Passage (Yellow)</option>
+          <option value="stair">Stairs / Inter-floor Portal (Blue)</option>
+          <option value="pwd">PWD / Accessible Ramp / Elevator (Green)</option>
+        </select>
+
+        <div class="legend">
+          <span class="legend-item"><span class="dot" style="background:#ff0055;"></span> Standard</span>
+          <span class="legend-item"><span class="dot" style="background:#ffaa00;"></span> Gateway</span>
+          <span class="legend-item"><span class="dot" style="background:#00aaff;"></span> Stair</span>
+          <span class="legend-item"><span class="dot" style="background:#00ff66;"></span> PWD</span>
+        </div>
+      </div>
+
+      <!-- 4. Interactive Node Inspector -->
+      <div class="panel inspector-panel">
+        <div class="panel-title">4. Node Inspector (Click Dot on Map)</div>
+        <div id="inspectorContent" style="font-size:12px; color:#aaa;">No node selected. Click any canvas marker to inspect or modify properties.</div>
+      </div>
+
+      <!-- 5. Dual-Method JSON Operations -->
+      <div class="panel">
+        <div class="panel-title">5. JSON Map Export & Import</div>
+        <textarea id="output" placeholder="Paste JSON here, drag & drop a .json file here, or click Upload / Import JSON below..."></textarea>
+        <input type="file" id="jsonFileInput" accept=".json" style="display: none;">
+        
+        <div class="row">
+          <button class="success" onclick="importJSON()">Upload / Import JSON</button>
+          <button class="success" onclick="downloadJSON()">Download nodes.json</button>
+        </div>
+        <div class="row" style="margin-top: 4px;">
+          <button onclick="copyJSON()">Copy Raw Text</button>
+          <button class="danger" onclick="clearAllNodes()">Clear All</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ==================== TAB 2: 360 ASSET RENAMER ==================== -->
+  <div id="view-renamer" class="view-container">
+    <div id="renamer-container">
+      
+      <div class="renamer-toolbar">
+        <div>
+          <h3 style="color:#00aaff; margin-bottom:4px;">360° Photo Asset Matcher & Resizer</h3>
+          <p style="font-size:12px; color:#aaa;">Match photos, remove unneeded assignments, and automatically compress high-res photos for web performance before downloading.</p>
+        </div>
+
+        <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+          <div style="display:flex; flex-direction:column; gap:2px;">
+            <label style="font-size:10px; color:#aaa;">Web Resizer Max Width:</label>
+            <select id="compressRes" style="padding:4px; font-size:11px;">
+              <option value="4096" selected>4K Web (4096px - Recommended)</option>
+              <option value="2048">2K Web (2048px - Ultra Fast)</option>
+              <option value="8192">8K High Res (8192px)</option>
+              <option value="0">Original (No Resizing)</option>
+            </select>
+          </div>
+
+          <div style="display:flex; flex-direction:column; gap:2px;">
+            <label style="font-size:10px; color:#aaa;">JPEG Quality:</label>
+            <select id="compressQuality" style="padding:4px; font-size:11px;">
+              <option value="0.85" selected>85% Quality (Balanced)</option>
+              <option value="0.75">75% Quality (Smaller Size)</option>
+              <option value="0.92">92% Quality (High Detail)</option>
+              <option value="1.0">100% Quality (Lossless)</option>
+            </select>
+          </div>
+
+          <button class="success" onclick="syncDirectToFolder()" id="btnSync">📁 Select Local Directory (Direct Sync)</button>
+          <button onclick="exportAssetsZip()" id="btnZip">📦 Download All as ZIP</button>
+        </div>
+      </div>
+
+      <div class="asset-grid" id="assetGrid">
+        <div style="color:#666; font-size:13px; text-align:center; padding:40px;">No nodes loaded. Add nodes on Tab 1 or import a nodes.json file first.</div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    // --- STATE MANAGEMENT ---
+    let img = new Image();
+    let nodes = [];
+    let selectedIndex = -1;
+    let zones = ['main_hall', 'reading_room_a', 'elib_section_1', 'aisle_1', 'stairwell'];
+    let mappedFiles = {}; // { node_id: FileObject }
+
+    const typeColors = {
+      standard: '#ff0055',
+      door: '#ffaa00',
+      stair: '#00aaff',
+      pwd: '#00ff66'
+    };
+
+    // --- DOM REFERENCES ---
+    const canvas = document.getElementById('floorplan');
+    const ctx = canvas.getContext('2d');
+    const fileInput = document.getElementById('fileInput');
+    const floorPrefixInput = document.getElementById('floorPrefix');
+    const pxPerMeterInput = document.getElementById('pxPerMeter');
+    const maxConnectDistInput = document.getElementById('maxConnectDist');
+    const pathTemplateInput = document.getElementById('pathTemplateInput');
+    const zoneSelect = document.getElementById('zoneSelect');
+    const newZoneInput = document.getElementById('newZoneInput');
+    const nodeTypeSelect = document.getElementById('nodeTypeSelect');
+    const inspectorContent = document.getElementById('inspectorContent');
+    const output = document.getElementById('output');
+    const jsonFileInput = document.getElementById('jsonFileInput');
+
+    // --- INIT ---
+    function init() {
+      renderZoneDropdown();
+      setupDragAndDropJSON();
+    }
+
+    // --- TAB NAVIGATION ---
+    function switchTab(tab) {
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.view-container').forEach(v => v.classList.remove('active'));
+
+      if (tab === 'editor') {
+        document.querySelectorAll('.tab-btn')[0].classList.add('active');
+        document.getElementById('view-editor').classList.add('active');
+        redraw();
+      } else {
+        document.querySelectorAll('.tab-btn')[1].classList.add('active');
+        document.getElementById('view-renamer').classList.add('active');
+        renderAssetRenamerGrid();
+      }
+    }
+
+    // --- ZONE MANAGEMENT ---
+    function renderZoneDropdown() {
+      zoneSelect.innerHTML = zones.map(z => `<option value="${z}">${z}</option>`).join('');
+    }
+
+    function addNewZone() {
+      const newZone = newZoneInput.value.trim().toLowerCase().replace(/\s+/g, '_');
+      if (newZone && !zones.includes(newZone)) {
+        zones.push(newZone);
+        renderZoneDropdown();
+        zoneSelect.value = newZone;
+        newZoneInput.value = '';
+      }
+    }
+
+    // --- FLOORPLAN CANVAS RENDERING ---
+    fileInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (evt) => {
+        img.onload = () => {
+          canvas.width = img.width;
+          canvas.height = img.height;
+          recalculatePixelsFromMeters();
+          redraw();
+        };
+        img.src = evt.target.result;
+      };
+      reader.readAsDataURL(file);
+    });
+
+    canvas.addEventListener('click', (e) => {
+      if (!img.src) return;
+      const rect = canvas.getBoundingClientRect();
+      const pxX = e.clientX - rect.left;
+      const pxY = e.clientY - rect.top;
+
+      // Check if user clicked an existing node (12px radius)
+      const clickedIndex = nodes.findIndex(n => Math.hypot(n.pxX - pxX, n.pxY - pxY) <= 12);
+
+      if (clickedIndex !== -1) {
+        selectedIndex = clickedIndex;
+        renderInspector();
+        redraw();
+      } else {
+        // Create New Node
+        const scale = parseFloat(pxPerMeterInput.value) || 50;
+        const floor = floorPrefixInput.value.trim().toLowerCase() || 'f1';
+        const zone = zoneSelect.value;
+        const nodeType = nodeTypeSelect.value;
+        
+        const meterX = Math.round((pxX / scale) * 100) / 100;
+        const meterY = Math.round(((canvas.height - pxY) / scale) * 100) / 100;
+
+        const nodeIndex = nodes.length + 1;
+        const nodeNum = nodeIndex.toString().padStart(3, '0');
+        const nodeId = `${floor}_node_${nodeNum}`;
+
+        const panoramaPath = pathTemplateInput.value
+          .replace('{floor}', floor)
+          .replace('{num}', nodeNum)
+          .replace('{id}', nodeId);
+
+        const node = {
+          id: nodeId,
+          floor: floor,
+          zone: zone,
+          type: nodeType,
+          title: `${floor.toUpperCase()} Node ${nodeIndex} (${nodeType})`,
+          x: meterX,
+          y: meterY,
+          maxConnectDist: null, // null defaults to global connection radius
+          heading: 0,
+          panorama: panoramaPath,
+          targetFloor: null,
+          targetNodeId: null,
+          pxX, pxY
+        };
+
+        nodes.push(node);
+        selectedIndex = nodes.length - 1;
+        renderInspector();
+        updateOutput();
+        redraw();
+      }
+    });
+
+    function redraw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      if (img.src) ctx.drawImage(img, 0, 0);
+
+      // 1. Draw Real-Time Connection Path Overlay Lines
+      const globalMaxDist = parseFloat(maxConnectDistInput.value) || 3.5;
+      for (let i = 0; i < nodes.length; i++) {
+        for (let j = i + 1; j < nodes.length; j++) {
+          const n1 = nodes[i];
+          const n2 = nodes[j];
+          const dist = Math.hypot(n1.x - n2.x, n1.y - n2.y);
+
+          // Determine connection radius (individual node override vs global range)
+          const r1 = (n1.maxConnectDist !== undefined && n1.maxConnectDist !== null && !isNaN(n1.maxConnectDist)) ? parseFloat(n1.maxConnectDist) : globalMaxDist;
+          const r2 = (n2.maxConnectDist !== undefined && n2.maxConnectDist !== null && !isNaN(n2.maxConnectDist)) ? parseFloat(n2.maxConnectDist) : globalMaxDist;
+          const effectiveMaxDist = Math.max(r1, r2);
+
+          if (dist <= effectiveMaxDist) {
+            // Zone Rule: Must be in same zone OR at least one is a 'door'
+            if (n1.zone === n2.zone || n1.type === 'door' || n2.type === 'door') {
+              ctx.beginPath();
+              ctx.lineWidth = 2;
+              ctx.strokeStyle = (n1.type === 'door' || n2.type === 'door') ? 'rgba(255, 170, 0, 0.6)' : 'rgba(0, 255, 102, 0.4)';
+              ctx.moveTo(n1.pxX, n1.pxY);
+              ctx.lineTo(n2.pxX, n2.pxY);
+              ctx.stroke();
+            }
+          }
+        }
+      }
+
+      // 2. Draw Node Markers
+      nodes.forEach((n, i) => {
+        const isSelected = (i === selectedIndex);
+
+        ctx.beginPath();
+        ctx.arc(n.pxX, n.pxY, isSelected ? 10 : 7, 0, 2 * Math.PI);
+        ctx.fillStyle = typeColors[n.type] || '#ff0055';
+        ctx.fill();
+        ctx.lineWidth = isSelected ? 3 : 2;
+        ctx.strokeStyle = isSelected ? '#00e5ff' : '#ffffff';
+        ctx.stroke();
+
+        // Node number labels rendered in BLACK
+        ctx.fillStyle = '#000000';
+        ctx.font = 'bold 11px sans-serif';
+        ctx.fillText(`${i + 1}`, n.pxX + 10, n.pxY + 4);
+      });
+    }
+
+    function recalculatePixelsFromMeters() {
+      if (!canvas.height) return;
+      const scale = parseFloat(pxPerMeterInput.value) || 50;
+      nodes.forEach(n => {
+        n.pxX = Math.round(n.x * scale);
+        n.pxY = Math.round(canvas.height - (n.y * scale));
+      });
+    }
+
+    // --- NODE INSPECTOR PANEL ---
+    function renderInspector() {
+      if (selectedIndex < 0 || selectedIndex >= nodes.length) {
+        inspectorContent.innerHTML = 'No node selected. Click any canvas marker to inspect or modify properties.';
+        return;
+      }
+
+      const n = nodes[selectedIndex];
+
+      if (!zones.includes(n.zone)) {
+        zones.push(n.zone);
+        renderZoneDropdown();
+      }
+
+      const globalDist = parseFloat(maxConnectDistInput.value) || 3.5;
+      const customRadiusVal = (n.maxConnectDist !== undefined && n.maxConnectDist !== null) ? n.maxConnectDist : '';
+
+      inspectorContent.innerHTML = `
+        <div style="display:flex; flex-direction:column; gap:8px;">
+          <div><strong>ID:</strong> <span style="color:#00aaff;">${n.id}</span> (X: ${n.x}m, Y: ${n.y}m)</div>
+          
+          <label>Title / Descriptor:</label>
+          <input type="text" id="editTitle" value="${n.title}">
+
+          <div class="row">
+            <div>
+              <label>Zone ID:</label>
+              <select id="editZone">
+                ${zones.map(z => `<option value="${z}" ${z === n.zone ? 'selected' : ''}>${z}</option>`).join('')}
+              </select>
+            </div>
+            <div>
+              <label>Node Type:</label>
+              <select id="editType">
+                <option value="standard" ${n.type === 'standard' ? 'selected' : ''}>Standard Path</option>
+                <option value="door" ${n.type === 'door' ? 'selected' : ''}>Doorway / Gateway</option>
+                <option value="stair" ${n.type === 'stair' ? 'selected' : ''}>Stairs</option>
+                <option value="pwd" ${n.type === 'pwd' ? 'selected' : ''}>PWD / Accessible</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Multi-Floor Transition Fields -->
+          <div id="floorTransitionGroup" style="display: ${n.type === 'stair' || n.type === 'pwd' ? 'flex' : 'none'}; flex-direction: column; gap: 6px; border-left: 3px solid #00aaff; padding-left: 8px; margin: 4px 0;">
+            <label style="color:#00aaff; font-weight:bold;">Multi-Floor Target Settings:</label>
+            <div class="row">
+              <div>
+                <label>Target Floor ID:</label>
+                <input type="text" id="editTargetFloor" value="${n.targetFloor || ''}" placeholder="e.g. f2">
+              </div>
+              <div>
+                <label>Target Node ID:</label>
+                <input type="text" id="editTargetNodeId" value="${n.targetNodeId || ''}" placeholder="e.g. f2_stair_01">
+              </div>
+            </div>
+          </div>
+
+          <label>Custom Connection Radius (Meters):</label>
+          <input type="number" id="editMaxConnectDist" value="${customRadiusVal}" placeholder="Global Default (${globalDist}m)" step="0.1">
+
+          <label>Panorama File Path:</label>
+          <input type="text" id="editPanorama" value="${n.panorama}">
+
+          <img id="inspectorThumb" class="thumb-preview" alt="Preview">
+
+          <div class="row" style="margin-top:4px;">
+            <button onclick="saveNodeEdits()" class="success">Save Changes</button>
+            <button onclick="deleteSelectedNode()" class="danger">Delete Node</button>
+          </div>
+        </div>
+      `;
+
+      // Dynamic listener for node type change
+      setTimeout(() => {
+        const editTypeEl = document.getElementById('editType');
+        if (editTypeEl) {
+          editTypeEl.addEventListener('change', (e) => {
+            const group = document.getElementById('floorTransitionGroup');
+            if (group) {
+              group.style.display = (e.target.value === 'stair' || e.target.value === 'pwd') ? 'flex' : 'none';
+            }
+          });
+        }
+      }, 0);
+
+      // Update thumbnail preview if asset mapped
+      if (mappedFiles[n.id]) {
+        const thumb = document.getElementById('inspectorThumb');
+        thumb.src = URL.createObjectURL(mappedFiles[n.id]);
+        thumb.style.display = 'block';
+      }
+    }
+
+    function saveNodeEdits() {
+      if (selectedIndex < 0) return;
+      const n = nodes[selectedIndex];
+      n.title = document.getElementById('editTitle').value.trim();
+      n.zone = document.getElementById('editZone').value;
+      n.type = document.getElementById('editType').value;
+      n.panorama = document.getElementById('editPanorama').value.trim();
+
+      // Multi-Floor Transition Logic
+      if (n.type === 'stair' || n.type === 'pwd') {
+        n.targetFloor = document.getElementById('editTargetFloor').value.trim() || null;
+        n.targetNodeId = document.getElementById('editTargetNodeId').value.trim() || null;
+      } else {
+        n.targetFloor = null;
+        n.targetNodeId = null;
+      }
+
+      const customRadiusVal = document.getElementById('editMaxConnectDist').value.trim();
+      if (customRadiusVal === '') {
+        n.maxConnectDist = null;
+      } else {
+        const parsed = parseFloat(customRadiusVal);
+        n.maxConnectDist = !isNaN(parsed) && parsed > 0 ? parsed : null;
+      }
+
+      updateOutput();
+      redraw();
+      alert(`Node ${n.id} updated!`);
+    }
+
+    function deleteSelectedNode() {
+      if (selectedIndex < 0) return;
+      nodes.splice(selectedIndex, 1);
+      selectedIndex = -1;
+      renderInspector();
+      updateOutput();
+      redraw();
+    }
+
+    // --- GLOBAL PATH RE-MAPPER ---
+    function applyBulkPathRemap() {
+      const template = pathTemplateInput.value;
+      nodes.forEach((n, idx) => {
+        const num = (idx + 1).toString().padStart(3, '0');
+        n.panorama = template
+          .replace('{floor}', n.floor)
+          .replace('{num}', num)
+          .replace('{id}', n.id);
+      });
+      updateOutput();
+      if (selectedIndex >= 0) renderInspector();
+      redraw();
+      alert(`Successfully updated image paths for all ${nodes.length} nodes!`);
+    }
+
+    // --- JSON FILE & IMPORT/EXPORT OPERATIONS ---
+    function updateOutput() {
+      const exportableNodes = nodes.map(({ pxX, pxY, ...rest }) => rest);
+      output.value = JSON.stringify(exportableNodes, null, 2);
+    }
+
+    function loadJSONData(jsonText) {
+      try {
+        const parsed = JSON.parse(jsonText);
+        if (!Array.isArray(parsed)) {
+          alert("Invalid JSON structure. Expected an array of nodes.");
+          return;
+        }
+        nodes = parsed;
+        recalculatePixelsFromMeters();
+        selectedIndex = -1;
+        renderInspector();
+        redraw();
+        updateOutput();
+        alert(`Successfully imported ${nodes.length} nodes!`);
+      } catch (err) {
+        alert("Invalid JSON format. Please check the file contents.");
+      }
+    }
+
+    function importJSON() {
+      const textContent = output.value.trim();
+      if (textContent.length > 0) {
+        loadJSONData(textContent);
+      } else {
+        jsonFileInput.click();
+      }
+    }
+
+    jsonFileInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (evt) => loadJSONData(evt.target.result);
+      reader.readAsText(file);
+      e.target.value = "";
+    });
+
+    function setupDragAndDropJSON() {
+      output.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        output.style.borderColor = "#007acc";
+      });
+
+      output.addEventListener('dragleave', () => {
+        output.style.borderColor = "";
+      });
+
+      output.addEventListener('drop', (e) => {
+        e.preventDefault();
+        output.style.borderColor = "";
+
+        const files = e.dataTransfer.files;
+        if (files.length === 0) return;
+
+        const file = files[0];
+        if (file.type !== "application/json" && !file.name.endsWith(".json")) {
+          alert("Please drop a valid .json file.");
+          return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = (evt) => loadJSONData(evt.target.result);
+        reader.readAsText(file);
+      });
+    }
+
+    function downloadJSON() {
+      updateOutput();
+      const blob = new Blob([output.value], { type: 'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `${floorPrefixInput.value || 'floor'}_nodes.json`;
+      a.click();
+    }
+
+    function copyJSON() {
+      updateOutput();
+      navigator.clipboard.writeText(output.value);
+      alert('Copied nodes.json content to clipboard!');
+    }
+
+    function clearAllNodes() {
+      if (confirm("Are you sure you want to clear all nodes?")) {
+        nodes = [];
+        selectedIndex = -1;
+        renderInspector();
+        updateOutput();
+        redraw();
+      }
+    }
+
+    // --- TAB 2: 360 ASSET MATCHING, REMOVAL & COMPRESSION LOGIC ---
+    function getTargetFilename(node) {
+      const parts = node.panorama.split('/');
+      return parts[parts.length - 1] || `${node.id}.jpg`;
+    }
+
+    function renderAssetRenamerGrid() {
+      const grid = document.getElementById('assetGrid');
+      if (nodes.length === 0) {
+        grid.innerHTML = `<div style="color:#666; font-size:13px; text-align:center; padding:40px;">No nodes loaded. Add nodes on Tab 1 or import a nodes.json file first.</div>`;
+        return;
+      }
+
+      grid.innerHTML = nodes.map((node, i) => {
+        const expectedFilename = getTargetFilename(node);
+        const hasFile = mappedFiles[node.id];
+        const previewUrl = hasFile ? URL.createObjectURL(hasFile) : '';
+
+        return `
+          <div class="asset-row">
+            <div class="asset-info">
+              <div class="asset-id">#${i + 1} - ${node.id} (${node.title})</div>
+              <div class="asset-path">Expected Target: ${node.panorama}</div>
+            </div>
+            
+            <div class="drop-zone ${hasFile ? 'has-file' : ''}" 
+                 onclick="triggerFileInput('${node.id}')"
+                 ondragover="handleDragOver(event)"
+                 ondragleave="handleDragLeave(event)"
+                 ondrop="handleFileDrop(event, '${node.id}')">
+              ${hasFile ? `<img src="${previewUrl}">` : ''}
+              <span>${hasFile ? `✓ Matched: ${hasFile.name}` : `Drag Raw 360 Photo Here`}</span>
+              <input type="file" id="file_input_${node.id}" accept="image/*" style="display:none" onchange="handleFileSelect(event, '${node.id}')">
+            </div>
+
+            ${hasFile ? `
+              <button class="danger" style="padding:6px 10px; height:38px; font-size:12px; margin-left:8px;" onclick="removeMappedFile('${node.id}', event)" title="Remove Photo">✕ Remove</button>
+            ` : ''}
+          </div>
+        `;
+      }).join('');
+    }
+
+    function triggerFileInput(nodeId) {
+      document.getElementById(`file_input_${nodeId}`).click();
+    }
+
+    function handleDragOver(e) { e.preventDefault(); e.currentTarget.classList.add('dragover'); }
+    function handleDragLeave(e) { e.currentTarget.classList.remove('dragover'); }
+
+    function handleFileDrop(e, nodeId) {
+      e.preventDefault();
+      e.currentTarget.classList.remove('dragover');
+      if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+        mappedFiles[nodeId] = e.dataTransfer.files[0];
+        renderAssetRenamerGrid();
+      }
+    }
+
+    function handleFileSelect(e, nodeId) {
+      if (e.target.files && e.target.files[0]) {
+        mappedFiles[nodeId] = e.target.files[0];
+        renderAssetRenamerGrid();
+      }
+    }
+
+    // FEATURE 1: REMOVE MATCHED PHOTO
+    function removeMappedFile(nodeId, event) {
+      if (event) event.stopPropagation();
+      delete mappedFiles[nodeId];
+      renderAssetRenamerGrid();
+      if (selectedIndex >= 0 && nodes[selectedIndex] && nodes[selectedIndex].id === nodeId) {
+        renderInspector();
+      }
+    }
+
+    // FEATURE 2: IMAGE RESIZER & COMPRESSOR ENGINE
+    async function processAndCompressImage(file) {
+      const maxDim = parseInt(document.getElementById('compressRes').value) || 0;
+      const quality = parseFloat(document.getElementById('compressQuality').value) || 0.85;
+
+      if (maxDim === 0 && quality === 1.0) {
+        return file;
+      }
+
+      return new Promise((resolve) => {
+        const img = new Image();
+        const url = URL.createObjectURL(file);
+
+        img.onload = () => {
+          URL.revokeObjectURL(url);
+          let targetWidth = img.width;
+          let targetHeight = img.height;
+
+          if (maxDim > 0 && targetWidth > maxDim) {
+            targetHeight = Math.round((targetHeight * maxDim) / targetWidth);
+            targetWidth = maxDim;
+          }
+
+          const offscreenCanvas = document.createElement('canvas');
+          offscreenCanvas.width = targetWidth;
+          offscreenCanvas.height = targetHeight;
+          const ctx = offscreenCanvas.getContext('2d');
+
+          ctx.imageSmoothingEnabled = true;
+          ctx.imageSmoothingQuality = 'high';
+          ctx.drawImage(img, 0, 0, targetWidth, targetHeight);
+
+          offscreenCanvas.toBlob(
+            (blob) => {
+              if (blob) {
+                resolve(blob);
+              } else {
+                resolve(file);
+              }
+            },
+            'image/jpeg',
+            quality
+          );
+        };
+
+        img.onerror = () => {
+          URL.revokeObjectURL(url);
+          resolve(file);
+        };
+
+        img.src = url;
+      });
+    }
+
+    // --- DIRECT LOCAL FOLDER ACCESS WITH COMPRESSION ---
+    async function syncDirectToFolder() {
+      if (!window.showDirectoryPicker) {
+        alert("Direct Directory Sync is supported in Chrome, Edge, and Opera. For Safari/Firefox, use 'Download All as ZIP'.");
+        return;
+      }
+
+      const fileKeys = Object.keys(mappedFiles);
+      if (fileKeys.length === 0) {
+        alert("No 360 photos matched yet! Drag and drop raw images onto node rows first.");
+        return;
+      }
+
+      try {
+        const dirHandle = await window.showDirectoryPicker();
+        const btn = document.getElementById('btnSync');
+        const originalText = btn.innerText;
+        let count = 0;
+
+        for (let i = 0; i < nodes.length; i++) {
+          const node = nodes[i];
+          const file = mappedFiles[node.id];
+          if (file) {
+            btn.innerText = `⏳ Resizing ${count + 1}/${fileKeys.length}...`;
+            const processedBlob = await processAndCompressImage(file);
+            const targetName = getTargetFilename(node);
+            const fileHandle = await dirHandle.getFileHandle(targetName, { create: true });
+            const writable = await fileHandle.createWritable();
+            await writable.write(processedBlob);
+            await writable.close();
+            count++;
+          }
+        }
+
+        btn.innerText = originalText;
+        alert(`Success! Saved and web-optimized ${count} 360 photos directly into your local computer folder.`);
+      } catch (err) {
+        if (err.name !== 'AbortError') {
+          console.error(err);
+          alert("Error syncing to local folder: " + err.message);
+        }
+      }
+    }
+
+    // --- UNIVERSAL FALLBACK: JSZip EXPORTER WITH COMPRESSION ---
+    async function exportAssetsZip() {
+      if (typeof JSZip === 'undefined') {
+        alert("JSZip library loading. Ensure internet connectivity to load ZIP exporter.");
+        return;
+      }
+
+      const fileKeys = Object.keys(mappedFiles);
+      if (fileKeys.length === 0) {
+        alert("No 360 photos matched yet! Drag and drop raw images onto node rows first.");
+        return;
+      }
+
+      const zip = new JSZip();
+      const btn = document.getElementById('btnZip');
+      const originalText = btn.innerText;
+      let count = 0;
+
+      for (let i = 0; i < nodes.length; i++) {
+        const node = nodes[i];
+        const file = mappedFiles[node.id];
+        if (file) {
+          btn.innerText = `⏳ Resizing ${count + 1}/${fileKeys.length}...`;
+          const processedBlob = await processAndCompressImage(file);
+          const targetName = getTargetFilename(node);
+          zip.file(targetName, processedBlob);
+          count++;
+        }
+      }
+
+      btn.innerText = "⏳ Building ZIP...";
+      const blob = await zip.generateAsync({ type: "blob" });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `${floorPrefixInput.value || 'floor'}_360_assets.zip`;
+      a.click();
+
+      btn.innerText = originalText;
+    }
+
+    // Initialize App
+    init();
+    pxPerMeterInput.addEventListener('change', () => { recalculatePixelsFromMeters(); redraw(); });
+    maxConnectDistInput.addEventListener('change', redraw);
+  </script>
+</body>
+</html>

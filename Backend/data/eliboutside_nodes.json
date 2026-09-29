@@ -1,0 +1,713 @@
+[
+  {
+    "id": "eliboutside_node_001",
+    "floor": "eliboutside",
+    "zone": "mainpathway",
+    "type": "standard",
+    "title": "ELIBOUTSIDE Node 1 (standard)",
+    "x": 11.6,
+    "y": 7.76,
+    "heading": 40,
+    "panorama": "/assets/360/eliboutside/eliboutside_node_001.jpg",
+    "targetNodes": [
+      "eliboutside_node_002",
+      "eliboutside_node_036"
+    ],
+    "targetFloor": null,
+    "targetNodeId": null
+  },
+  {
+    "id": "eliboutside_node_002",
+    "floor": "eliboutside",
+    "zone": "mainpathway",
+    "type": "standard",
+    "title": "ELIBOUTSIDE Node 2 (standard)",
+    "x": 12.86,
+    "y": 9.06,
+    "heading": 59,
+    "panorama": "/assets/360/eliboutside/eliboutside_node_002.jpg",
+    "targetNodes": [
+      "eliboutside_node_001",
+      "eliboutside_node_004",
+      "eliboutside_node_003"
+    ],
+    "targetFloor": null,
+    "targetNodeId": null
+  },
+  {
+    "id": "eliboutside_node_003",
+    "floor": "eliboutside",
+    "zone": "mainpathway",
+    "type": "standard",
+    "title": "ELIBOUTSIDE Node 3 (standard)",
+    "x": 13.8,
+    "y": 8.58,
+    "heading": 90,
+    "panorama": "/assets/360/eliboutside/eliboutside_node_003.jpg",
+    "targetNodes": [
+      "eliboutside_node_002",
+      "eliboutside_node_005"
+    ],
+    "targetFloor": null,
+    "targetNodeId": null
+  },
+  {
+    "id": "eliboutside_node_004",
+    "floor": "eliboutside",
+    "zone": "mainpathway",
+    "type": "standard",
+    "title": "ELIBOUTSIDE Node 4 (standard)",
+    "x": 12.36,
+    "y": 9.84,
+    "heading": 87,
+    "panorama": "/assets/360/eliboutside/eliboutside_node_004.jpg",
+    "targetNodes": [
+      "eliboutside_node_002"
+    ],
+    "targetFloor": null,
+    "targetNodeId": null
+  },
+  {
+    "id": "eliboutside_node_005",
+    "floor": "eliboutside",
+    "zone": "mainpathway",
+    "type": "standard",
+    "title": "ELIBOUTSIDE Node 5 (standard)",
+    "x": 14.9,
+    "y": 8.38,
+    "heading": 90,
+    "panorama": "/assets/360/eliboutside/eliboutside_node_005.jpg",
+    "targetNodes": [
+      "eliboutside_node_003",
+      "eliboutside_node_006"
+    ],
+    "targetFloor": null,
+    "targetNodeId": null
+  },
+  {
+    "id": "eliboutside_node_006",
+    "floor": "eliboutside",
+    "zone": "mainpathway",
+    "type": "standard",
+    "title": "ELIBOUTSIDE Node 6 (standard)",
+    "x": 16.08,
+    "y": 8.32,
+    "heading": 90,
+    "panorama": "/assets/360/eliboutside/eliboutside_node_006.jpg",
+    "targetNodes": [
+      "eliboutside_node_005",
+      "eliboutside_node_007"
+    ],
+    "targetFloor": null,
+    "targetNodeId": null
+  },
+  {
+    "id": "eliboutside_node_007",
+    "floor": "eliboutside",
+    "zone": "mainpathway",
+    "type": "standard",
+    "title": "ELIBOUTSIDE Node 7 (standard)",
+    "x": 17.14,
+    "y": 8.36,
+    "heading": 93,
+    "panorama": "/assets/360/eliboutside/eliboutside_node_007.jpg",
+    "targetNodes": [
+      "eliboutside_node_006",
+      "eliboutside_node_008"
+    ],
+    "targetFloor": null,
+    "targetNodeId": null
+  },
+  {
+    "id": "eliboutside_node_008",
+    "floor": "eliboutside",
+    "zone": "mainpathway",
+    "type": "standard",
+    "title": "ELIBOUTSIDE Node 8 (standard)",
+    "x": 18.32,
+    "y": 8.32,
+    "heading": 90,
+    "panorama": "/assets/360/eliboutside/eliboutside_node_008.jpg",
+    "targetNodes": [
+      "eliboutside_node_007",
+      "eliboutside_node_009"
+    ],
+    "targetFloor": null,
+    "targetNodeId": null
+  },
+  {
+    "id": "eliboutside_node_009",
+    "floor": "eliboutside",
+    "zone": "mainpathway",
+    "type": "standard",
+    "title": "ELIBOUTSIDE Node 9 (standard)",
+    "x": 19.5,
+    "y": 8.32,
+    "heading": 88,
+    "panorama": "/assets/360/eliboutside/eliboutside_node_009.jpg",
+    "targetNodes": [
+      "eliboutside_node_008",
+      "eliboutside_node_010"
+    ],
+    "targetFloor": null,
+    "targetNodeId": null
+  },
+  {
+    "id": "eliboutside_node_010",
+    "floor": "eliboutside",
+    "zone": "mainpathway",
+    "type": "standard",
+    "title": "ELIBOUTSIDE Node 10 (standard)",
+    "x": 20.6,
+    "y": 8.36,
+    "heading": 92,
+    "panorama": "/assets/360/eliboutside/eliboutside_node_010.jpg",
+    "targetNodes": [
+      "eliboutside_node_009",
+      "eliboutside_node_011"
+    ],
+    "targetFloor": null,
+    "targetNodeId": null
+  },
+  {
+    "id": "eliboutside_node_011",
+    "floor": "eliboutside",
+    "zone": "mainpathway",
+    "type": "standard",
+    "title": "ELIBOUTSIDE Node 11 (standard)",
+    "x": 21.74,
+    "y": 8.3,
+    "heading": 92,
+    "panorama": "/assets/360/eliboutside/eliboutside_node_011.jpg",
+    "targetNodes": [
+      "eliboutside_node_010",
+      "eliboutside_node_012"
+    ],
+    "targetFloor": null,
+    "targetNodeId": null
+  },
+  {
+    "id": "eliboutside_node_012",
+    "floor": "eliboutside",
+    "zone": "mainpathway",
+    "type": "standard",
+    "title": "ELIBOUTSIDE Node 12 (standard)",
+    "x": 23.06,
+    "y": 8.3,
+    "heading": 86,
+    "panorama": "/assets/360/eliboutside/eliboutside_node_012.jpg",
+    "targetNodes": [
+      "eliboutside_node_011",
+      "eliboutside_node_013"
+    ],
+    "targetFloor": null,
+    "targetNodeId": null
+  },
+  {
+    "id": "eliboutside_node_013",
+    "floor": "eliboutside",
+    "zone": "mainpathway",
+    "type": "standard",
+    "title": "ELIBOUTSIDE Node 13 (standard)",
+    "x": 24.01,
+    "y": 8.36,
+    "heading": 87,
+    "panorama": "/assets/360/eliboutside/eliboutside_node_013.jpg",
+    "targetNodes": [
+      "eliboutside_node_012",
+      "eliboutside_node_014"
+    ],
+    "targetFloor": null,
+    "targetNodeId": null
+  },
+  {
+    "id": "eliboutside_node_014",
+    "floor": "eliboutside",
+    "zone": "mainpathway",
+    "type": "standard",
+    "title": "ELIBOUTSIDE Node 14 (standard)",
+    "x": 24.67,
+    "y": 8.38,
+    "heading": 90,
+    "panorama": "/assets/360/eliboutside/eliboutside_node_014.jpg",
+    "targetNodes": [
+      "eliboutside_node_013",
+      "eliboutside_node_015"
+    ],
+    "targetFloor": null,
+    "targetNodeId": null
+  },
+  {
+    "id": "eliboutside_node_015",
+    "floor": "eliboutside",
+    "zone": "mainpathway",
+    "type": "standard",
+    "title": "ELIBOUTSIDE Node 15 (standard)",
+    "x": 25.75,
+    "y": 8.36,
+    "heading": 89,
+    "panorama": "/assets/360/eliboutside/eliboutside_node_015.jpg",
+    "targetNodes": [
+      "eliboutside_node_014",
+      "eliboutside_node_016"
+    ],
+    "targetFloor": null,
+    "targetNodeId": null
+  },
+  {
+    "id": "eliboutside_node_016",
+    "floor": "eliboutside",
+    "zone": "mainpathway",
+    "type": "standard",
+    "title": "ELIBOUTSIDE Node 16 (standard)",
+    "x": 26.73,
+    "y": 8.38,
+    "heading": 85,
+    "panorama": "/assets/360/eliboutside/eliboutside_node_016.jpg",
+    "targetNodes": [
+      "eliboutside_node_015",
+      "eliboutside_node_017"
+    ],
+    "targetFloor": null,
+    "targetNodeId": null
+  },
+  {
+    "id": "eliboutside_node_017",
+    "floor": "eliboutside",
+    "zone": "mainpathway",
+    "type": "standard",
+    "title": "ELIBOUTSIDE Node 17 (standard)",
+    "x": 27.73,
+    "y": 8.44,
+    "heading": 67,
+    "panorama": "/assets/360/eliboutside/eliboutside_node_017.jpg",
+    "targetNodes": [
+      "eliboutside_node_016",
+      "eliboutside_node_018",
+      "eliboutside_node_025"
+    ],
+    "targetFloor": null,
+    "targetNodeId": null
+  },
+  {
+    "id": "eliboutside_node_018",
+    "floor": "eliboutside",
+    "zone": "mainpathway",
+    "type": "standard",
+    "title": "ELIBOUTSIDE Node 18 (standard)",
+    "x": 28.47,
+    "y": 8.76,
+    "heading": 42,
+    "panorama": "/assets/360/eliboutside/eliboutside_node_018.jpg",
+    "targetNodes": [
+      "eliboutside_node_017",
+      "eliboutside_node_019",
+      "eliboutside_node_025"
+    ],
+    "targetFloor": null,
+    "targetNodeId": null
+  },
+  {
+    "id": "eliboutside_node_019",
+    "floor": "eliboutside",
+    "zone": "mainpathway",
+    "type": "standard",
+    "title": "ELIBOUTSIDE Node 19 (standard)",
+    "x": 29.35,
+    "y": 9.72,
+    "heading": 1,
+    "panorama": "/assets/360/eliboutside/eliboutside_node_019.jpg",
+    "targetNodes": [
+      "eliboutside_node_018",
+      "eliboutside_node_022",
+      "eliboutside_node_021",
+      "eliboutside_node_020"
+    ],
+    "targetFloor": null,
+    "targetNodeId": null
+  },
+  {
+    "id": "eliboutside_node_020",
+    "floor": "eliboutside",
+    "zone": "mainpathway",
+    "type": "door",
+    "title": "ELIBOUTSIDE Node 20 (standard)",
+    "x": 30.39,
+    "y": 8.16,
+    "heading": 325,
+    "panorama": "/assets/360/eliboutside/eliboutside_node_020.jpg",
+    "targetNodes": [
+      "eliboutside_node_019",
+      "eliboutside_node_029"
+    ],
+    "targetFloor": null,
+    "targetNodeId": null
+  },
+  {
+    "id": "eliboutside_node_021",
+    "floor": "eliboutside",
+    "zone": "mainpathway",
+    "type": "standard",
+    "title": "ELIBOUTSIDE Node 21 (standard)",
+    "x": 29.65,
+    "y": 11.26,
+    "heading": 1,
+    "panorama": "/assets/360/eliboutside/eliboutside_node_021.jpg",
+    "targetNodes": [
+      "eliboutside_node_022",
+      "eliboutside_node_019",
+      "eliboutside_node_023"
+    ],
+    "targetFloor": null,
+    "targetNodeId": null
+  },
+  {
+    "id": "eliboutside_node_022",
+    "floor": "eliboutside",
+    "zone": "mainpathway",
+    "type": "standard",
+    "title": "ELIBOUTSIDE Node 22 (standard)",
+    "x": 30.25,
+    "y": 10.52,
+    "heading": 36,
+    "panorama": "/assets/360/eliboutside/eliboutside_node_022.jpg",
+    "targetNodes": [
+      "eliboutside_node_019",
+      "eliboutside_node_021",
+      "eliboutside_node_023"
+    ],
+    "targetFloor": null,
+    "targetNodeId": null
+  },
+  {
+    "id": "eliboutside_node_023",
+    "floor": "eliboutside",
+    "zone": "mainpathway",
+    "type": "standard",
+    "title": "ELIBOUTSIDE Node 23 (standard)",
+    "x": 30.89,
+    "y": 11.32,
+    "heading": 15,
+    "panorama": "/assets/360/eliboutside/eliboutside_node_023.jpg",
+    "targetNodes": [
+      "eliboutside_node_022",
+      "eliboutside_node_021",
+      "eliboutside_node_024"
+    ],
+    "targetFloor": null,
+    "targetNodeId": null
+  },
+  {
+    "id": "eliboutside_node_024",
+    "floor": "eliboutside",
+    "zone": "mainpathway",
+    "type": "standard",
+    "title": "ELIBOUTSIDE Node 24 (standard)",
+    "x": 31.11,
+    "y": 12.48,
+    "heading": 0,
+    "panorama": "/assets/360/eliboutside/eliboutside_node_024.jpg",
+    "targetNodes": [
+      "eliboutside_node_023"
+    ],
+    "targetFloor": null,
+    "targetNodeId": null
+  },
+  {
+    "id": "eliboutside_node_025",
+    "floor": "eliboutside",
+    "zone": "mainpathway",
+    "type": "pwd",
+    "title": "ELIBOUTSIDE Node 25 (standard)",
+    "x": 27.83,
+    "y": 7.76,
+    "heading": 271,
+    "panorama": "/assets/360/eliboutside/eliboutside_node_025.jpg",
+    "targetNodes": [
+      "eliboutside_node_017",
+      "eliboutside_node_026",
+      "eliboutside_node_018"
+    ],
+    "targetFloor": null,
+    "targetNodeId": null
+  },
+  {
+    "id": "eliboutside_node_026",
+    "floor": "eliboutside",
+    "zone": "mainpathway",
+    "type": "pwd",
+    "title": "ELIBOUTSIDE Node 26 (standard)",
+    "x": 22.93,
+    "y": 7.7,
+    "heading": 96,
+    "panorama": "/assets/360/eliboutside/eliboutside_node_026.jpg",
+    "targetNodes": [
+      "eliboutside_node_025",
+      "eliboutside_node_028"
+    ],
+    "targetFloor": null,
+    "targetNodeId": null
+  },
+  {
+    "id": "eliboutside_node_027",
+    "floor": "eliboutside",
+    "zone": "mainpathway",
+    "type": "pwd",
+    "title": "ELIBOUTSIDE Node 27 (standard)",
+    "x": 22.99,
+    "y": 7.32,
+    "heading": 88,
+    "panorama": "/assets/360/eliboutside/eliboutside_node_027.jpg",
+    "targetNodes": [],
+    "targetFloor": null,
+    "targetNodeId": null
+  },
+  {
+    "id": "eliboutside_node_028",
+    "floor": "eliboutside",
+    "zone": "mainpathway",
+    "type": "pwd",
+    "title": "ELIBOUTSIDE Node 28 (standard)",
+    "x": 27.81,
+    "y": 7.12,
+    "heading": 276,
+    "panorama": "/assets/360/eliboutside/eliboutside_node_028.jpg",
+    "targetNodes": [
+      "eliboutside_node_031",
+      "eliboutside_node_026"
+    ],
+    "targetFloor": null,
+    "targetNodeId": null
+  },
+  {
+    "id": "eliboutside_node_029",
+    "floor": "eliboutside",
+    "zone": "mainpathway_bot",
+    "type": "standard",
+    "title": "ELIBOUTSIDE Node 29 (standard)",
+    "x": 30.21,
+    "y": 7.32,
+    "heading": 16,
+    "panorama": "/assets/360/eliboutside/eliboutside_node_029.jpg",
+    "targetNodes": [
+      "eliboutside_node_020",
+      "eliboutside_node_030"
+    ],
+    "targetFloor": null,
+    "targetNodeId": null
+  },
+  {
+    "id": "eliboutside_node_030",
+    "floor": "eliboutside",
+    "zone": "mainpathway_bot",
+    "type": "standard",
+    "title": "ELIBOUTSIDE Node 30 (standard)",
+    "x": 29.51,
+    "y": 6.52,
+    "heading": 43,
+    "panorama": "/assets/360/eliboutside/eliboutside_node_030.jpg",
+    "targetNodes": [
+      "eliboutside_node_029",
+      "eliboutside_node_031"
+    ],
+    "targetFloor": null,
+    "targetNodeId": null
+  },
+  {
+    "id": "eliboutside_node_031",
+    "floor": "eliboutside",
+    "zone": "mainpathway_bot",
+    "type": "standard",
+    "title": "ELIBOUTSIDE Node 31 (standard)",
+    "x": 28.07,
+    "y": 6.46,
+    "heading": 86,
+    "panorama": "/assets/360/eliboutside/eliboutside_node_031.jpg",
+    "targetNodes": [
+      "eliboutside_node_030",
+      "eliboutside_node_028",
+      "eliboutside_node_032"
+    ],
+    "targetFloor": null,
+    "targetNodeId": null
+  },
+  {
+    "id": "eliboutside_node_032",
+    "floor": "eliboutside",
+    "zone": "mainpathway_bot",
+    "type": "standard",
+    "title": "ELIBOUTSIDE Node 32 (standard)",
+    "x": 27.05,
+    "y": 6.42,
+    "heading": 90,
+    "panorama": "/assets/360/eliboutside/eliboutside_node_032.jpg",
+    "targetNodes": [
+      "eliboutside_node_031",
+      "eliboutside_node_033"
+    ],
+    "targetFloor": null,
+    "targetNodeId": null
+  },
+  {
+    "id": "eliboutside_node_033",
+    "floor": "eliboutside",
+    "zone": "mainpathway_bot",
+    "type": "standard",
+    "title": "ELIBOUTSIDE Node 33 (standard)",
+    "x": 25.51,
+    "y": 6.5,
+    "heading": 93,
+    "panorama": "/assets/360/eliboutside/eliboutside_node_033.jpg",
+    "targetNodes": [
+      "eliboutside_node_032",
+      "eliboutside_node_034"
+    ],
+    "targetFloor": null,
+    "targetNodeId": null
+  },
+  {
+    "id": "eliboutside_node_034",
+    "floor": "eliboutside",
+    "zone": "mainpathway_bot",
+    "type": "standard",
+    "title": "ELIBOUTSIDE Node 34 (standard)",
+    "x": 24.19,
+    "y": 6.44,
+    "heading": 86,
+    "panorama": "/assets/360/eliboutside/eliboutside_node_034.jpg",
+    "targetNodes": [
+      "eliboutside_node_033",
+      "eliboutside_node_035"
+    ],
+    "targetFloor": null,
+    "targetNodeId": null
+  },
+  {
+    "id": "eliboutside_node_035",
+    "floor": "eliboutside",
+    "zone": "mainpathway_bot",
+    "type": "standard",
+    "title": "ELIBOUTSIDE Node 35 (standard)",
+    "x": 22.63,
+    "y": 6.4,
+    "heading": 88,
+    "panorama": "/assets/360/eliboutside/eliboutside_node_035.jpg",
+    "targetNodes": [
+      "eliboutside_node_034"
+    ],
+    "targetFloor": null,
+    "targetNodeId": null
+  },
+  {
+    "id": "eliboutside_node_036",
+    "floor": "eliboutside",
+    "zone": "mainpathway_bot",
+    "type": "pwd",
+    "title": "ELIBOUTSIDE Node 36 (standard)",
+    "x": 10.87,
+    "y": 8.4,
+    "heading": 0,
+    "panorama": "/assets/360/eliboutside/eliboutside_node_036.jpg",
+    "targetNodes": [
+      "eliboutside_node_001",
+      "eliboutside_node_037"
+    ],
+    "targetFloor": null,
+    "targetNodeId": null
+  },
+  {
+    "id": "eliboutside_node_037",
+    "floor": "eliboutside",
+    "zone": "mainpathway_bot",
+    "type": "pwd",
+    "title": "ELIBOUTSIDE Node 37 (standard)",
+    "x": 10.89,
+    "y": 9.56,
+    "heading": 0,
+    "panorama": "/assets/360/eliboutside/eliboutside_node_037.jpg",
+    "targetNodes": [
+      "eliboutside_node_036",
+      "eliboutside_node_038"
+    ],
+    "targetFloor": null,
+    "targetNodeId": null
+  },
+  {
+    "id": "eliboutside_node_038",
+    "floor": "eliboutside",
+    "zone": "mainpathway_bot",
+    "type": "standard",
+    "title": "ELIBOUTSIDE Node 38 (standard)",
+    "x": 11.03,
+    "y": 12.1,
+    "heading": 0,
+    "panorama": "/assets/360/eliboutside/eliboutside_node_038.jpg",
+    "targetNodes": [
+      "eliboutside_node_037",
+      "eliboutside_node_039"
+    ],
+    "targetFloor": null,
+    "targetNodeId": null
+  },
+  {
+    "id": "eliboutside_node_039",
+    "floor": "eliboutside",
+    "zone": "mainpathway_bot",
+    "type": "pwd",
+    "title": "ELIBOUTSIDE Node 39 (standard)",
+    "x": 10.93,
+    "y": 13.88,
+    "heading": 0,
+    "panorama": "/assets/360/eliboutside/eliboutside_node_039.jpg",
+    "targetNodes": [
+      "eliboutside_node_038",
+      "eliboutside_node_040"
+    ],
+    "targetFloor": null,
+    "targetNodeId": null
+  },
+  {
+    "id": "eliboutside_node_040",
+    "floor": "eliboutside",
+    "zone": "mainpathway_bot",
+    "type": "pwd",
+    "title": "ELIBOUTSIDE Node 40 (standard)",
+    "x": 10.95,
+    "y": 21.36,
+    "heading": 182,
+    "panorama": "/assets/360/eliboutside/eliboutside_node_040.jpg",
+    "targetNodes": [
+      "eliboutside_node_039"
+    ],
+    "targetFloor": null,
+    "targetNodeId": null
+  },
+  {
+    "id": "eliboutside_node_041",
+    "floor": "eliboutside",
+    "zone": "mainpathway_bot",
+    "type": "pwd",
+    "title": "ELIBOUTSIDE Node 41 (standard)",
+    "x": 10.63,
+    "y": 13.88,
+    "heading": 180,
+    "panorama": "/assets/360/eliboutside/eliboutside_node_041.jpg",
+    "targetNodes": [],
+    "targetFloor": null,
+    "targetNodeId": null
+  },
+  {
+    "id": "eliboutside_node_042",
+    "floor": "eliboutside",
+    "zone": "mainpathway_bot",
+    "type": "pwd",
+    "title": "ELIBOUTSIDE Node 42 (standard)",
+    "x": 10.75,
+    "y": 12.04,
+    "heading": 182,
+    "panorama": "/assets/360/eliboutside/eliboutside_node_042.jpg",
+    "targetNodes": [],
+    "targetFloor": null,
+    "targetNodeId": null
+  }
+]
