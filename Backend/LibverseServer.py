@@ -23,6 +23,10 @@ ASSETS_DIR = os.path.join(os.path.dirname(__file__), "assets", "360")
 os.makedirs(ASSETS_DIR, exist_ok=True)
 app.mount("/assets/360", StaticFiles(directory=ASSETS_DIR), name="360_assets")
 
+# Static file serving for 2D floor maps
+MAPS_DIR = os.path.join(os.path.dirname(__file__), "assets", "maps")
+os.makedirs(MAPS_DIR, exist_ok=True)
+app.mount("/assets/maps", StaticFiles(directory=MAPS_DIR), name="maps_assets")
 
 @app.get("/")
 def root_status():
