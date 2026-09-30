@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import {
   getNodesBounds,
   calculateMinimapPosition,
@@ -10,12 +10,25 @@ export default function LibverseMinimap({
   allNodes,
   onNavigate,
   floorMapUrl,
+  pxPerMeter = 50,
 }) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [pendingNode, setPendingNode] = useState(null);
   const [mapAspectRatio, setMapAspectRatio] = useState(null);
+  const [floorDimensions, setFloorDimensions] = useState(null);
 
-  const bounds = useMemo(() => getNodesBounds(allNodes), [allNodes]);
+  // Reset image dimensions when changing floors / map image
+  useEffect(() => {
+    setFloorDimensions(null);
+    setMapAspectRatio(null);
+  }, [floorMapUrl]);
+
+  // Calculates precise canvas bounds in meters using true image dimensions
+  const bounds = useMemo(
+    () => getNodesBounds(allNodes, floorDimensions, pxPerMeter),
+    [allNodes, floorDimensions, pxPerMeter]
+  );
+
   const radarRotation = calculateRadarRotation(currentNode);
 
   if (!Array.isArray(allNodes) || allNodes.length === 0) return null;
@@ -24,6 +37,7 @@ export default function LibverseMinimap({
     const { naturalWidth, naturalHeight } = e.target;
     if (naturalWidth && naturalHeight) {
       setMapAspectRatio(naturalWidth / naturalHeight);
+      setFloorDimensions({ width: naturalWidth, height: naturalHeight });
     }
   };
 
