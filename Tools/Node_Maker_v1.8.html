@@ -3,14 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Virtual Tour Node Editor & Asset Manager (Node Maker v1.4)</title>
-  <!-- JSZip for Universal ZIP Export Fallback -->
+  <title>Virtual Tour Node Editor & Asset Manager (Node Maker v1.8)</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: #181818; color: #e0e0e0; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
 
-    /* Top Navigation Tabs */
     header { background: #222; border-bottom: 1px solid #333; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; height: 50px; flex-shrink: 0; }
     .brand { font-weight: bold; font-size: 16px; color: #007acc; display: flex; align-items: center; gap: 8px; }
     .tabs { display: flex; height: 100%; }
@@ -18,16 +16,13 @@
     .tab-btn:hover { color: #fff; background: #2a2a2a; }
     .tab-btn.active { color: #00aaff; border-bottom-color: #00aaff; background: #1e1e1e; }
 
-    /* View Containers */
     .view-container { flex: 1; display: none; height: calc(100vh - 50px); overflow: hidden; }
     .view-container.active { display: flex; }
 
-    /* TAB 1: NODE EDITOR LAYOUT */
     #canvas-container { flex: 1; overflow: auto; padding: 20px; background: #121212; position: relative; display: flex; justify-content: center; align-items: center; }
-    canvas { border: 1px solid #333; cursor: crosshair; background: #1a1a1a; box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
+    canvas { border: 1px solid #333; cursor: crosshair; background: #1a1a1a; box-shadow: 0 4px 20px rgba(0,0,0,0.5); transform-origin: center center; }
     #sidebar { width: 420px; background: #222; border-left: 1px solid #333; padding: 16px; display: flex; flex-direction: column; gap: 12px; overflow-y: auto; flex-shrink: 0; }
 
-    /* UI Panels */
     .panel { background: #1a1a1a; padding: 12px; border-radius: 6px; border: 1px solid #2e2e2e; display: flex; flex-direction: column; gap: 8px; }
     .panel-title { font-size: 12px; font-weight: bold; color: #00aaff; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px; display: flex; justify-content: space-between; align-items: center; }
     
@@ -49,11 +44,9 @@
     .legend-item { display: flex; align-items: center; gap: 4px; }
     .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
 
-    /* Node Inspector Panel */
     .inspector-panel { border-color: #007acc; background: #16222e; }
     .thumb-preview { width: 100%; height: 90px; object-fit: cover; border-radius: 4px; border: 1px solid #444; background: #000; display: none; }
 
-    /* TAB 2: 360 ASSET RENAMER LAYOUT */
     #renamer-container { flex: 1; padding: 24px; overflow-y: auto; background: #181818; display: flex; flex-direction: column; gap: 16px; }
     .renamer-toolbar { display: flex; gap: 12px; background: #222; padding: 16px; border-radius: 8px; border: 1px solid #333; align-items: center; justify-content: space-between; flex-wrap: wrap; }
     
@@ -71,31 +64,49 @@
 </head>
 <body>
 
-  <!-- Header & Navigation -->
   <header>
-    <div class="brand">📌 Node Maker v1.4 - Map Builder & Asset CMS</div>
+    <div class="brand">📌 Node Maker v1.8 - Adaptive Resolution & Marker Sizing</div>
     <div class="tabs">
       <button class="tab-btn active" onclick="switchTab('editor')">Tab 1: Node Generator & Map Editor</button>
       <button class="tab-btn" onclick="switchTab('renamer')">Tab 2: 360 Asset Renamer & Sync</button>
     </div>
   </header>
 
-  <!-- ==================== TAB 1: NODE MAP EDITOR ==================== -->
   <div id="view-editor" class="view-container active">
-    
-    <!-- Floorplan Canvas Workspace -->
     <div id="canvas-container">
       <canvas id="floorplan"></canvas>
     </div>
 
-    <!-- Administrative Sidebar Controls -->
     <div id="sidebar">
-      
-      <!-- 1. Floorplan Setup -->
       <div class="panel">
         <div class="panel-title">1. Floorplan Configuration</div>
         <label>Select Floor Plan Image</label>
         <input type="file" id="fileInput" accept="image/*">
+
+        <!-- Display Zoom & Viewport Controls -->
+        <div style="background: #121212; padding: 8px; border-radius: 4px; border: 1px solid #282828; margin-top: 4px; display: flex; flex-direction: column; gap: 6px;">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <label style="color:#00aaff; font-weight:bold;">Viewport Zoom:</label>
+            <span id="zoomVal" style="font-size:11px; font-family:monospace; color:#fff;">100%</span>
+          </div>
+          <div class="row" style="align-items: center;">
+            <input type="range" id="zoomSlider" min="10" max="200" value="100" style="flex:2;">
+            <button class="secondary" onclick="fitImageToScreen()" style="padding:4px 8px; font-size:10px;">🔍 Fit to View</button>
+          </div>
+        </div>
+
+        <!-- Adaptive Node Marker Scaling Control -->
+        <div style="background: #121212; padding: 8px; border-radius: 4px; border: 1px solid #282828; display: flex; flex-direction: column; gap: 6px;">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <label style="color:#00ff66; font-weight:bold;">Node Marker Size Scale:</label>
+            <span id="nodeSizeVal" style="font-size:11px; font-family:monospace; color:#fff;">100%</span>
+          </div>
+          <div class="row" style="align-items: center;">
+            <input type="range" id="nodeSizeSlider" min="30" max="350" value="100" style="flex:2;">
+            <button class="secondary" onclick="resetNodeSizeScale()" style="padding:4px 8px; font-size:10px;">↺ Auto Baseline</button>
+          </div>
+        </div>
+
         <div class="row">
           <div>
             <label>Floor ID</label>
@@ -108,26 +119,27 @@
         </div>
       </div>
 
-      <!-- 2. Path Vector Settings & Path Re-mapper -->
       <div class="panel">
-        <div class="panel-title">2. Pathing & Image Template Engine</div>
-        <label>Global Max Path Connection Distance (Meters)</label>
-        <input type="number" id="maxConnectDist" value="3.5" step="0.5">
-
+        <div class="panel-title">2. Pathing & Schema Engine</div>
         <label>Panorama Path Schema Template</label>
         <input type="text" id="pathTemplateInput" value="/assets/360/{floor}/node_{num}.jpg" placeholder="/assets/360/{floor}/node_{num}.jpg">
-        
         <button class="secondary" onclick="applyBulkPathRemap()">⚡ Bulk Re-map All Image Paths</button>
+        <div style="font-size: 11px; color: #00aaff; margin-top: 4px; line-height: 1.4;">
+          💡 <strong>Controls:</strong><br>
+          • <strong>Click + Drag Node:</strong> Move single or selected group.<br>
+          • <strong>Box Select:</strong> Drag on empty space to multi-select.<br>
+          • <strong>Shift + Click Node:</strong> Toggle multi-selection.<br>
+          • <strong>Shift + Drag Node:</strong> Toggle path connection.
+        </div>
       </div>
 
-      <!-- 3. Zone Preset Manager -->
       <div class="panel">
-        <div class="panel-title">3. Zone Preset Manager (Wall Isolation)</div>
+        <div class="panel-title">3. Zone Preset Manager</div>
         <label>Select Active Zone</label>
         <select id="zoneSelect"></select>
 
         <div class="row">
-          <input type="text" id="newZoneInput" placeholder="New Zone ID (e.g. reading_room)">
+          <input type="text" id="newZoneInput" placeholder="New Zone ID (e.g. mainpathway)">
           <button class="secondary" onclick="addNewZone()">+ Add Zone</button>
         </div>
 
@@ -147,13 +159,11 @@
         </div>
       </div>
 
-      <!-- 4. Interactive Node Inspector -->
       <div class="panel inspector-panel">
-        <div class="panel-title">4. Node Inspector (Click Dot on Map)</div>
+        <div class="panel-title">4. Node Inspector</div>
         <div id="inspectorContent" style="font-size:12px; color:#aaa;">No node selected. Click any canvas marker to inspect or modify properties.</div>
       </div>
 
-      <!-- 5. Dual-Method JSON Operations -->
       <div class="panel">
         <div class="panel-title">5. JSON Map Export & Import</div>
         <textarea id="output" placeholder="Paste JSON here, drag & drop a .json file here, or click Upload / Import JSON below..."></textarea>
@@ -168,14 +178,11 @@
           <button class="danger" onclick="clearAllNodes()">Clear All</button>
         </div>
       </div>
-
     </div>
   </div>
 
-  <!-- ==================== TAB 2: 360 ASSET RENAMER ==================== -->
   <div id="view-renamer" class="view-container">
     <div id="renamer-container">
-      
       <div class="renamer-toolbar">
         <div>
           <h3 style="color:#00aaff; margin-bottom:4px;">360° Photo Asset Matcher & Resizer</h3>
@@ -211,17 +218,32 @@
       <div class="asset-grid" id="assetGrid">
         <div style="color:#666; font-size:13px; text-align:center; padding:40px;">No nodes loaded. Add nodes on Tab 1 or import a nodes.json file first.</div>
       </div>
-
     </div>
   </div>
 
   <script>
-    // --- STATE MANAGEMENT ---
     let img = new Image();
     let nodes = [];
     let selectedIndex = -1;
-    let zones = ['main_hall', 'reading_room_a', 'elib_section_1', 'aisle_1', 'stairwell'];
-    let mappedFiles = {}; // { node_id: FileObject }
+    let selectedIndices = new Set();
+    let zones = ['main_hall', 'mainpathway', 'elib_section_1', 'stairwell'];
+    let mappedFiles = {};
+
+    let isConnecting = false;
+    let connectStartNode = null;
+    let dragCurrentMouse = { x: 0, y: 0 };
+
+    let isDraggingHeading = false;
+    let isDraggingNode = false;
+    let isBoxSelecting = false;
+    let dragStartPos = { x: 0, y: 0 };
+    let boxStartPos = { x: 0, y: 0 };
+    let boxCurrentPos = { x: 0, y: 0 };
+    let nodeDragOrigins = [];
+
+    let displayZoom = 1.0;
+    let userMarkerScaleMultiplier = 1.0;
+    let autoResolutionScale = 1.0;
 
     const typeColors = {
       standard: '#ff0055',
@@ -230,13 +252,11 @@
       pwd: '#00ff66'
     };
 
-    // --- DOM REFERENCES ---
     const canvas = document.getElementById('floorplan');
     const ctx = canvas.getContext('2d');
     const fileInput = document.getElementById('fileInput');
     const floorPrefixInput = document.getElementById('floorPrefix');
     const pxPerMeterInput = document.getElementById('pxPerMeter');
-    const maxConnectDistInput = document.getElementById('maxConnectDist');
     const pathTemplateInput = document.getElementById('pathTemplateInput');
     const zoneSelect = document.getElementById('zoneSelect');
     const newZoneInput = document.getElementById('newZoneInput');
@@ -244,14 +264,18 @@
     const inspectorContent = document.getElementById('inspectorContent');
     const output = document.getElementById('output');
     const jsonFileInput = document.getElementById('jsonFileInput');
+    const zoomSlider = document.getElementById('zoomSlider');
+    const zoomVal = document.getElementById('zoomVal');
+    const nodeSizeSlider = document.getElementById('nodeSizeSlider');
+    const nodeSizeVal = document.getElementById('nodeSizeVal');
 
-    // --- INIT ---
     function init() {
       renderZoneDropdown();
       setupDragAndDropJSON();
+      setupCanvasInteractions();
+      setupSliderControls();
     }
 
-    // --- TAB NAVIGATION ---
     function switchTab(tab) {
       document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
       document.querySelectorAll('.view-container').forEach(v => v.classList.remove('active'));
@@ -267,7 +291,71 @@
       }
     }
 
-    // --- ZONE MANAGEMENT ---
+    function setupSliderControls() {
+      zoomSlider.addEventListener('input', (e) => {
+        displayZoom = parseFloat(e.target.value) / 100;
+        zoomVal.innerText = `${e.target.value}%`;
+        applyCanvasDisplayZoom();
+      });
+
+      nodeSizeSlider.addEventListener('input', (e) => {
+        userMarkerScaleMultiplier = parseFloat(e.target.value) / 100;
+        nodeSizeVal.innerText = `${e.target.value}%`;
+        redraw();
+      });
+    }
+
+    function resetNodeSizeScale() {
+      nodeSizeSlider.value = 100;
+      userMarkerScaleMultiplier = 1.0;
+      nodeSizeVal.innerText = '100%';
+      redraw();
+    }
+
+    function calculateAutoResolutionScale() {
+      if (!canvas.width) return 1.0;
+      // Baseline reference: 1500px width floorplan
+      return Math.max(0.4, canvas.width / 1500);
+    }
+
+    function getEffectiveMarkerScale() {
+      return autoResolutionScale * userMarkerScaleMultiplier;
+    }
+
+    function applyCanvasDisplayZoom() {
+      if (!img.src || !canvas.width) return;
+      canvas.style.width = `${Math.round(canvas.width * displayZoom)}px`;
+      canvas.style.height = `${Math.round(canvas.height * displayZoom)}px`;
+    }
+
+    function fitImageToScreen() {
+      if (!img.src || !canvas.width) return;
+      const container = document.getElementById('canvas-container');
+      const availWidth = container.clientWidth - 40;
+      const availHeight = container.clientHeight - 40;
+
+      const scaleX = availWidth / canvas.width;
+      const scaleY = availHeight / canvas.height;
+      const fitScale = Math.min(scaleX, scaleY, 1.0);
+
+      const zoomPercent = Math.max(10, Math.round(fitScale * 100));
+      zoomSlider.value = zoomPercent;
+      displayZoom = zoomPercent / 100;
+      zoomVal.innerText = `${zoomPercent}%`;
+      applyCanvasDisplayZoom();
+    }
+
+    function getRawCanvasCoords(e) {
+      const rect = canvas.getBoundingClientRect();
+      const scaleX = canvas.width / rect.width;
+      const scaleY = canvas.height / rect.height;
+
+      return {
+        pxX: (e.clientX - rect.left) * scaleX,
+        pxY: (e.clientY - rect.top) * scaleY
+      };
+    }
+
     function renderZoneDropdown() {
       zoneSelect.innerHTML = zones.map(z => `<option value="${z}">${z}</option>`).join('');
     }
@@ -282,7 +370,6 @@
       }
     }
 
-    // --- FLOORPLAN CANVAS RENDERING ---
     fileInput.addEventListener('change', (e) => {
       const file = e.target.files[0];
       if (!file) return;
@@ -291,6 +378,8 @@
         img.onload = () => {
           canvas.width = img.width;
           canvas.height = img.height;
+          autoResolutionScale = calculateAutoResolutionScale();
+          fitImageToScreen();
           recalculatePixelsFromMeters();
           redraw();
         };
@@ -299,107 +388,338 @@
       reader.readAsDataURL(file);
     });
 
-    canvas.addEventListener('click', (e) => {
-      if (!img.src) return;
-      const rect = canvas.getBoundingClientRect();
-      const pxX = e.clientX - rect.left;
-      const pxY = e.clientY - rect.top;
+    function setupCanvasInteractions() {
+      canvas.addEventListener('mousedown', (e) => {
+        if (!img.src) return;
+        const { pxX, pxY } = getRawCanvasCoords(e);
+        const markerScale = getEffectiveMarkerScale();
 
-      // Check if user clicked an existing node (12px radius)
-      const clickedIndex = nodes.findIndex(n => Math.hypot(n.pxX - pxX, n.pxY - pxY) <= 12);
+        const hitRadius = Math.max(10, 12 * markerScale);
+        const dialLength = 35 * markerScale;
 
-      if (clickedIndex !== -1) {
-        selectedIndex = clickedIndex;
+        // 1. Check Heading Compass Dial Handle
+        if (selectedIndex >= 0 && selectedIndex < nodes.length) {
+          const selNode = nodes[selectedIndex];
+          const rad = (selNode.heading || 0) * (Math.PI / 180);
+          const handleX = selNode.pxX + Math.sin(rad) * dialLength;
+          const handleY = selNode.pxY - Math.cos(rad) * dialLength;
+
+          if (Math.hypot(handleX - pxX, handleY - pxY) <= Math.max(12, 12 * markerScale)) {
+            isDraggingHeading = true;
+            return;
+          }
+        }
+
+        const clickedIndex = nodes.findIndex(n => Math.hypot(n.pxX - pxX, n.pxY - pxY) <= hitRadius);
+
+        // 2. Shift + Drag to Connect Nodes
+        if (e.shiftKey && clickedIndex !== -1 && !isBoxSelecting) {
+          isConnecting = true;
+          connectStartNode = nodes[clickedIndex];
+          dragCurrentMouse = { x: pxX, y: pxY };
+          return;
+        }
+
+        // 3. Clicked an existing Node Marker
+        if (clickedIndex !== -1) {
+          if (e.shiftKey) {
+            if (selectedIndices.has(clickedIndex)) {
+              selectedIndices.delete(clickedIndex);
+            } else {
+              selectedIndices.add(clickedIndex);
+            }
+          } else {
+            if (!selectedIndices.has(clickedIndex)) {
+              selectedIndices.clear();
+              selectedIndices.add(clickedIndex);
+            }
+          }
+
+          selectedIndex = clickedIndex;
+          isDraggingNode = true;
+          dragStartPos = { x: pxX, y: pxY };
+          nodeDragOrigins = Array.from(selectedIndices).map(idx => ({
+            idx,
+            origPxX: nodes[idx].pxX,
+            origPxY: nodes[idx].pxY
+          }));
+
+          renderInspector();
+          redraw();
+          return;
+        }
+
+        // 4. Clicked on Empty Canvas Space -> Start Marquee Box Selection
+        if (!e.shiftKey) {
+          selectedIndices.clear();
+          selectedIndex = -1;
+        }
+
+        isBoxSelecting = true;
+        boxStartPos = { x: pxX, y: pxY };
+        boxCurrentPos = { x: pxX, y: pxY };
         renderInspector();
         redraw();
+      });
+
+      canvas.addEventListener('mousemove', (e) => {
+        if (!img.src) return;
+        const { pxX, pxY } = getRawCanvasCoords(e);
+
+        // A. Heading Drag
+        if (isDraggingHeading && selectedIndex >= 0) {
+          const selNode = nodes[selectedIndex];
+          const dx = pxX - selNode.pxX;
+          const dy = pxY - selNode.pxY;
+          let angleDeg = Math.round(Math.atan2(dx, -dy) * (180 / Math.PI));
+          if (angleDeg < 0) angleDeg += 360;
+
+          selNode.heading = angleDeg;
+          if (document.getElementById('editHeading')) {
+            document.getElementById('editHeading').value = angleDeg;
+          }
+          updateOutput();
+          redraw();
+          return;
+        }
+
+        // B. Node Dragging (Single or Group)
+        if (isDraggingNode && nodeDragOrigins.length > 0) {
+          const deltaX = pxX - dragStartPos.x;
+          const deltaY = pxY - dragStartPos.y;
+          const scale = parseFloat(pxPerMeterInput.value) || 50;
+
+          nodeDragOrigins.forEach(item => {
+            const node = nodes[item.idx];
+            node.pxX = Math.round(item.origPxX + deltaX);
+            node.pxY = Math.round(item.origPxY + deltaY);
+
+            // Sync meter coordinates back from pixel placement
+            node.x = Math.round((node.pxX / scale) * 100) / 100;
+            node.y = Math.round(((canvas.height - node.pxY) / scale) * 100) / 100;
+          });
+
+          updateOutput();
+          if (selectedIndex >= 0) renderInspector();
+          redraw();
+          return;
+        }
+
+        // C. Connecting Line Drag
+        if (isConnecting) {
+          dragCurrentMouse = { x: pxX, y: pxY };
+          redraw();
+          return;
+        }
+
+        // D. Box Marquee Drag
+        if (isBoxSelecting) {
+          boxCurrentPos = { x: pxX, y: pxY };
+          redraw();
+          return;
+        }
+      });
+
+      canvas.addEventListener('mouseup', (e) => {
+        const { pxX, pxY } = getRawCanvasCoords(e);
+        const markerScale = getEffectiveMarkerScale();
+        const hitRadius = Math.max(10, 12 * markerScale);
+
+        if (isDraggingHeading) isDraggingHeading = false;
+        if (isDraggingNode) isDraggingNode = false;
+
+        // Finalize Shift Drag Connection Line
+        if (isConnecting) {
+          const targetIndex = nodes.findIndex(n => Math.hypot(n.pxX - pxX, n.pxY - pxY) <= hitRadius);
+          if (targetIndex !== -1 && nodes[targetIndex] !== connectStartNode) {
+            toggleNodeConnection(connectStartNode, nodes[targetIndex]);
+          }
+          isConnecting = false;
+          connectStartNode = null;
+          redraw();
+          return;
+        }
+
+        // Finalize Box Selection or Place New Node
+        if (isBoxSelecting) {
+          isBoxSelecting = false;
+          const xMin = Math.min(boxStartPos.x, boxCurrentPos.x);
+          const xMax = Math.max(boxStartPos.x, boxCurrentPos.x);
+          const yMin = Math.min(boxStartPos.y, boxCurrentPos.y);
+          const yMax = Math.max(boxStartPos.y, boxCurrentPos.y);
+
+          const dragDist = Math.hypot(boxCurrentPos.x - boxStartPos.x, boxCurrentPos.y - boxStartPos.y);
+
+          if (dragDist > 10) {
+            nodes.forEach((n, idx) => {
+              if (n.pxX >= xMin && n.pxX <= xMax && n.pxY >= yMin && n.pxY <= yMax) {
+                selectedIndices.add(idx);
+              }
+            });
+            if (selectedIndices.size > 0) {
+              selectedIndex = Array.from(selectedIndices)[0];
+            }
+          } else {
+            const scale = parseFloat(pxPerMeterInput.value) || 50;
+            const floor = floorPrefixInput.value.trim().toLowerCase() || 'f1';
+            const zone = zoneSelect.value;
+            const nodeType = nodeTypeSelect.value;
+
+            const meterX = Math.round((pxX / scale) * 100) / 100;
+            const meterY = Math.round(((canvas.height - pxY) / scale) * 100) / 100;
+
+            const nodeIndex = nodes.length + 1;
+            const nodeNum = nodeIndex.toString().padStart(3, '0');
+            const nodeId = `${floor}_node_${nodeNum}`;
+
+            const panoramaPath = pathTemplateInput.value
+              .replace('{floor}', floor)
+              .replace('{num}', nodeNum)
+              .replace('{id}', nodeId);
+
+            const node = {
+              id: nodeId,
+              floor: floor,
+              zone: zone,
+              type: nodeType,
+              title: `${floor.toUpperCase()} Node ${nodeIndex} (${nodeType})`,
+              x: meterX,
+              y: meterY,
+              heading: 0,
+              panorama: panoramaPath,
+              targetNodes: [],
+              targetFloor: null,
+              targetNodeId: null,
+              pxX, pxY
+            };
+
+            nodes.push(node);
+            selectedIndex = nodes.length - 1;
+            selectedIndices.clear();
+            selectedIndices.add(selectedIndex);
+          }
+
+          renderInspector();
+          updateOutput();
+          redraw();
+        }
+      });
+    }
+
+    function toggleNodeConnection(nodeA, nodeB) {
+      if (!Array.isArray(nodeA.targetNodes)) nodeA.targetNodes = [];
+      if (!Array.isArray(nodeB.targetNodes)) nodeB.targetNodes = [];
+
+      const idxA = nodeA.targetNodes.indexOf(nodeB.id);
+      if (idxA > -1) {
+        nodeA.targetNodes.splice(idxA, 1);
       } else {
-        // Create New Node
-        const scale = parseFloat(pxPerMeterInput.value) || 50;
-        const floor = floorPrefixInput.value.trim().toLowerCase() || 'f1';
-        const zone = zoneSelect.value;
-        const nodeType = nodeTypeSelect.value;
-        
-        const meterX = Math.round((pxX / scale) * 100) / 100;
-        const meterY = Math.round(((canvas.height - pxY) / scale) * 100) / 100;
-
-        const nodeIndex = nodes.length + 1;
-        const nodeNum = nodeIndex.toString().padStart(3, '0');
-        const nodeId = `${floor}_node_${nodeNum}`;
-
-        const panoramaPath = pathTemplateInput.value
-          .replace('{floor}', floor)
-          .replace('{num}', nodeNum)
-          .replace('{id}', nodeId);
-
-        const node = {
-          id: nodeId,
-          floor: floor,
-          zone: zone,
-          type: nodeType,
-          title: `${floor.toUpperCase()} Node ${nodeIndex} (${nodeType})`,
-          x: meterX,
-          y: meterY,
-          maxConnectDist: null, // null defaults to global connection radius
-          heading: 0,
-          panorama: panoramaPath,
-          pxX, pxY
-        };
-
-        nodes.push(node);
-        selectedIndex = nodes.length - 1;
-        renderInspector();
-        updateOutput();
-        redraw();
+        nodeA.targetNodes.push(nodeB.id);
       }
-    });
+
+      const idxB = nodeB.targetNodes.indexOf(nodeA.id);
+      if (idxB > -1) {
+        nodeB.targetNodes.splice(idxB, 1);
+      } else {
+        nodeB.targetNodes.push(nodeA.id);
+      }
+
+      updateOutput();
+      renderInspector();
+    }
 
     function redraw() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       if (img.src) ctx.drawImage(img, 0, 0);
 
-      // 1. Draw Real-Time Connection Path Overlay Lines
-      const globalMaxDist = parseFloat(maxConnectDistInput.value) || 3.5;
-      for (let i = 0; i < nodes.length; i++) {
-        for (let j = i + 1; j < nodes.length; j++) {
-          const n1 = nodes[i];
-          const n2 = nodes[j];
-          const dist = Math.hypot(n1.x - n2.x, n1.y - n2.y);
+      const markerScale = getEffectiveMarkerScale();
+      const nodeRadius = Math.max(4, 7 * markerScale);
+      const selRadius = Math.max(6, 10 * markerScale);
+      const lineWidth = Math.max(1, 3 * markerScale);
+      const dialLength = 35 * markerScale;
+      const fontSize = Math.max(9, Math.round(11 * markerScale));
 
-          // Determine connection radius (individual node override vs global range)
-          const r1 = (n1.maxConnectDist !== undefined && n1.maxConnectDist !== null && !isNaN(n1.maxConnectDist)) ? parseFloat(n1.maxConnectDist) : globalMaxDist;
-          const r2 = (n2.maxConnectDist !== undefined && n2.maxConnectDist !== null && !isNaN(n2.maxConnectDist)) ? parseFloat(n2.maxConnectDist) : globalMaxDist;
-          const effectiveMaxDist = Math.max(r1, r2);
-
-          if (dist <= effectiveMaxDist) {
-            // Zone Rule: Must be in same zone OR at least one is a 'door'
-            if (n1.zone === n2.zone || n1.type === 'door' || n2.type === 'door') {
+      // 1. Draw Manual Path Lines
+      const drawnPairs = new Set();
+      nodes.forEach(n => {
+        const targets = Array.isArray(n.targetNodes) ? n.targetNodes : (n.targetNodeId ? [n.targetNodeId] : []);
+        targets.forEach(targetId => {
+          const pairKey = [n.id, targetId].sort().join('--');
+          if (!drawnPairs.has(pairKey)) {
+            drawnPairs.add(pairKey);
+            const targetNode = nodes.find(m => m.id === targetId);
+            if (targetNode) {
               ctx.beginPath();
-              ctx.lineWidth = 2;
-              ctx.strokeStyle = (n1.type === 'door' || n2.type === 'door') ? 'rgba(255, 170, 0, 0.6)' : 'rgba(0, 255, 102, 0.4)';
-              ctx.moveTo(n1.pxX, n1.pxY);
-              ctx.lineTo(n2.pxX, n2.pxY);
+              ctx.lineWidth = lineWidth;
+              ctx.strokeStyle = '#00ff66';
+              ctx.moveTo(n.pxX, n.pxY);
+              ctx.lineTo(targetNode.pxX, targetNode.pxY);
               ctx.stroke();
             }
           }
-        }
+        });
+      });
+
+      // 2. Draw Shift Drag Connection Line
+      if (isConnecting && connectStartNode) {
+        ctx.beginPath();
+        ctx.lineWidth = Math.max(1, 2 * markerScale);
+        ctx.setLineDash([6 * markerScale, 6 * markerScale]);
+        ctx.strokeStyle = '#00aaff';
+        ctx.moveTo(connectStartNode.pxX, connectStartNode.pxY);
+        ctx.lineTo(dragCurrentMouse.x, dragCurrentMouse.y);
+        ctx.stroke();
+        ctx.setLineDash([]);
       }
 
-      // 2. Draw Node Markers
+      // 3. Draw Box Selection Marquee
+      if (isBoxSelecting) {
+        const width = boxCurrentPos.x - boxStartPos.x;
+        const height = boxCurrentPos.y - boxStartPos.y;
+        ctx.fillStyle = 'rgba(0, 170, 255, 0.15)';
+        ctx.fillRect(boxStartPos.x, boxStartPos.y, width, height);
+        ctx.strokeStyle = '#00aaff';
+        ctx.lineWidth = Math.max(1, 1.5 * markerScale);
+        ctx.setLineDash([4 * markerScale, 4 * markerScale]);
+        ctx.strokeRect(boxStartPos.x, boxStartPos.y, width, height);
+        ctx.setLineDash([]);
+      }
+
+      // 4. Draw Node Markers & Heading Compass Handles
       nodes.forEach((n, i) => {
-        const isSelected = (i === selectedIndex);
+        const isSelected = selectedIndices.has(i) || (i === selectedIndex);
+
+        // Heading Vector Dial Line
+        const headingDeg = n.heading || 0;
+        const rad = headingDeg * (Math.PI / 180);
+        const handleX = n.pxX + Math.sin(rad) * dialLength;
+        const handleY = n.pxY - Math.cos(rad) * dialLength;
 
         ctx.beginPath();
-        ctx.arc(n.pxX, n.pxY, isSelected ? 10 : 7, 0, 2 * Math.PI);
+        ctx.lineWidth = Math.max(1, 2 * markerScale);
+        ctx.strokeStyle = isSelected ? '#00e5ff' : 'rgba(0, 170, 255, 0.5)';
+        ctx.moveTo(n.pxX, n.pxY);
+        ctx.lineTo(handleX, handleY);
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.arc(handleX, handleY, isSelected ? (5 * markerScale) : (3 * markerScale), 0, 2 * Math.PI);
+        ctx.fillStyle = '#00aaff';
+        ctx.fill();
+
+        // Node Circle Marker
+        ctx.beginPath();
+        ctx.arc(n.pxX, n.pxY, isSelected ? selRadius : nodeRadius, 0, 2 * Math.PI);
         ctx.fillStyle = typeColors[n.type] || '#ff0055';
         ctx.fill();
-        ctx.lineWidth = isSelected ? 3 : 2;
+        ctx.lineWidth = isSelected ? Math.max(2, 3 * markerScale) : Math.max(1, 2 * markerScale);
         ctx.strokeStyle = isSelected ? '#00e5ff' : '#ffffff';
         ctx.stroke();
 
-        // Node number labels rendered in BLACK
-        ctx.fillStyle = '#000000';
-        ctx.font = 'bold 11px sans-serif';
-        ctx.fillText(`${i + 1}`, n.pxX + 10, n.pxY + 4);
+        // Node number labels
+        ctx.fillStyle = '#ffffff';
+        ctx.font = `bold ${fontSize}px sans-serif`;
+        ctx.fillText(`${i + 1}`, n.pxX + (12 * markerScale), n.pxY + (4 * markerScale));
       });
     }
 
@@ -412,8 +732,28 @@
       });
     }
 
-    // --- NODE INSPECTOR PANEL ---
     function renderInspector() {
+      if (selectedIndices.size > 1) {
+        inspectorContent.innerHTML = `
+          <div style="display:flex; flex-direction:column; gap:8px;">
+            <div style="color:#00aaff; font-weight:bold;">Group Selection Active</div>
+            <div style="font-size:11px; color:#aaa;">Selected <strong>${selectedIndices.size}</strong> nodes.</div>
+            
+            <label>Bulk Assign Zone:</label>
+            <select id="bulkZoneSelect">
+              <option value="">-- Choose Zone --</option>
+              ${zones.map(z => `<option value="${z}">${z}</option>`).join('')}
+            </select>
+            <button class="secondary" onclick="applyBulkZone()">Apply Zone to Selected Group</button>
+
+            <div class="row" style="margin-top:8px;">
+              <button onclick="deleteSelectedGroup()" class="danger">Delete All Selected (${selectedIndices.size})</button>
+            </div>
+          </div>
+        `;
+        return;
+      }
+
       if (selectedIndex < 0 || selectedIndex >= nodes.length) {
         inspectorContent.innerHTML = 'No node selected. Click any canvas marker to inspect or modify properties.';
         return;
@@ -426,8 +766,7 @@
         renderZoneDropdown();
       }
 
-      const globalDist = parseFloat(maxConnectDistInput.value) || 3.5;
-      const customRadiusVal = (n.maxConnectDist !== undefined && n.maxConnectDist !== null) ? n.maxConnectDist : '';
+      const connectedList = Array.isArray(n.targetNodes) ? n.targetNodes.join(', ') : (n.targetNodeId || 'None');
 
       inspectorContent.innerHTML = `
         <div style="display:flex; flex-direction:column; gap:8px;">
@@ -438,23 +777,25 @@
 
           <div class="row">
             <div>
+              <label>Camera Heading (° Offset):</label>
+              <input type="number" id="editHeading" value="${n.heading || 0}" min="0" max="360">
+            </div>
+            <div>
               <label>Zone ID:</label>
               <select id="editZone">
                 ${zones.map(z => `<option value="${z}" ${z === n.zone ? 'selected' : ''}>${z}</option>`).join('')}
               </select>
             </div>
-            <div>
-              <label>Node Type:</label>
-              <select id="editType">
-                <option value="standard" ${n.type === 'standard' ? 'selected' : ''}>Standard Path</option>
-                <option value="door" ${n.type === 'door' ? 'selected' : ''}>Doorway / Gateway</option>
-                <option value="stair" ${n.type === 'stair' ? 'selected' : ''}>Stairs</option>
-                <option value="pwd" ${n.type === 'pwd' ? 'selected' : ''}>PWD / Accessible</option>
-              </select>
-            </div>
           </div>
-          
-          <!-- Multi-Floor Transition Fields -->
+
+          <label>Node Type:</label>
+          <select id="editType">
+            <option value="standard" ${n.type === 'standard' ? 'selected' : ''}>Standard Path</option>
+            <option value="door" ${n.type === 'door' ? 'selected' : ''}>Doorway / Gateway</option>
+            <option value="stair" ${n.type === 'stair' ? 'selected' : ''}>Stairs</option>
+            <option value="pwd" ${n.type === 'pwd' ? 'selected' : ''}>PWD / Accessible</option>
+          </select>
+
           <div id="floorTransitionGroup" style="display: ${n.type === 'stair' || n.type === 'pwd' ? 'flex' : 'none'}; flex-direction: column; gap: 6px; border-left: 3px solid #00aaff; padding-left: 8px; margin: 4px 0;">
             <label style="color:#00aaff; font-weight:bold;">Multi-Floor Target Settings:</label>
             <div class="row">
@@ -469,8 +810,9 @@
             </div>
           </div>
 
-          <label>Custom Connection Radius (Meters):</label>
-          <input type="number" id="editMaxConnectDist" value="${customRadiusVal}" placeholder="Global Default (${globalDist}m)" step="0.1">
+          <div style="font-size:11px; color:#aaa; background:#121212; padding:6px; border-radius:4px;">
+            <strong>Linked Connections:</strong> <span style="color:#00ff66;">${connectedList || 'None (Hold Shift + Drag on map to link)'}</span>
+          </div>
 
           <label>Panorama File Path:</label>
           <input type="text" id="editPanorama" value="${n.panorama}">
@@ -484,12 +826,54 @@
         </div>
       `;
 
-      // Update thumbnail preview if asset mapped
+      setTimeout(() => {
+        const editTypeEl = document.getElementById('editType');
+        if (editTypeEl) {
+          editTypeEl.addEventListener('change', (e) => {
+            const group = document.getElementById('floorTransitionGroup');
+            if (group) {
+              group.style.display = (e.target.value === 'stair' || e.target.value === 'pwd') ? 'flex' : 'none';
+            }
+          });
+        }
+      }, 0);
+
       if (mappedFiles[n.id]) {
         const thumb = document.getElementById('inspectorThumb');
         thumb.src = URL.createObjectURL(mappedFiles[n.id]);
         thumb.style.display = 'block';
       }
+    }
+
+    function applyBulkZone() {
+      const zVal = document.getElementById('bulkZoneSelect').value;
+      if (!zVal) return;
+      selectedIndices.forEach(idx => {
+        nodes[idx].zone = zVal;
+      });
+      updateOutput();
+      alert(`Updated zone to "${zVal}" for ${selectedIndices.size} selected nodes.`);
+    }
+
+    function deleteSelectedGroup() {
+      if (!confirm(`Delete all ${selectedIndices.size} selected nodes?`)) return;
+
+      const indicesToDelete = Array.from(selectedIndices).sort((a, b) => b - a);
+      const deletedIds = indicesToDelete.map(i => nodes[i].id);
+
+      indicesToDelete.forEach(i => nodes.splice(i, 1));
+
+      nodes.forEach(n => {
+        if (Array.isArray(n.targetNodes)) {
+          n.targetNodes = n.targetNodes.filter(id => !deletedIds.includes(id));
+        }
+      });
+
+      selectedIndices.clear();
+      selectedIndex = -1;
+      renderInspector();
+      updateOutput();
+      redraw();
     }
 
     function saveNodeEdits() {
@@ -499,13 +883,14 @@
       n.zone = document.getElementById('editZone').value;
       n.type = document.getElementById('editType').value;
       n.panorama = document.getElementById('editPanorama').value.trim();
+      n.heading = parseInt(document.getElementById('editHeading').value) || 0;
 
-      const customRadiusVal = document.getElementById('editMaxConnectDist').value.trim();
-      if (customRadiusVal === '') {
-        n.maxConnectDist = null;
+      if (n.type === 'stair' || n.type === 'pwd') {
+        n.targetFloor = document.getElementById('editTargetFloor').value.trim() || null;
+        n.targetNodeId = document.getElementById('editTargetNodeId').value.trim() || null;
       } else {
-        const parsed = parseFloat(customRadiusVal);
-        n.maxConnectDist = !isNaN(parsed) && parsed > 0 ? parsed : null;
+        n.targetFloor = null;
+        n.targetNodeId = null;
       }
 
       updateOutput();
@@ -515,14 +900,22 @@
 
     function deleteSelectedNode() {
       if (selectedIndex < 0) return;
+      const deletedId = nodes[selectedIndex].id;
       nodes.splice(selectedIndex, 1);
+
+      nodes.forEach(n => {
+        if (Array.isArray(n.targetNodes)) {
+          n.targetNodes = n.targetNodes.filter(id => id !== deletedId);
+        }
+      });
+
+      selectedIndices.clear();
       selectedIndex = -1;
       renderInspector();
       updateOutput();
       redraw();
     }
 
-    // --- GLOBAL PATH RE-MAPPER ---
     function applyBulkPathRemap() {
       const template = pathTemplateInput.value;
       nodes.forEach((n, idx) => {
@@ -538,7 +931,6 @@
       alert(`Successfully updated image paths for all ${nodes.length} nodes!`);
     }
 
-    // --- JSON FILE & IMPORT/EXPORT OPERATIONS ---
     function updateOutput() {
       const exportableNodes = nodes.map(({ pxX, pxY, ...rest }) => rest);
       output.value = JSON.stringify(exportableNodes, null, 2);
@@ -553,6 +945,7 @@
         }
         nodes = parsed;
         recalculatePixelsFromMeters();
+        selectedIndices.clear();
         selectedIndex = -1;
         renderInspector();
         redraw();
@@ -628,6 +1021,7 @@
     function clearAllNodes() {
       if (confirm("Are you sure you want to clear all nodes?")) {
         nodes = [];
+        selectedIndices.clear();
         selectedIndex = -1;
         renderInspector();
         updateOutput();
@@ -635,7 +1029,6 @@
       }
     }
 
-    // --- TAB 2: 360 ASSET MATCHING, REMOVAL & COMPRESSION LOGIC ---
     function getTargetFilename(node) {
       const parts = node.panorama.split('/');
       return parts[parts.length - 1] || `${node.id}.jpg`;
@@ -701,7 +1094,6 @@
       }
     }
 
-    // FEATURE 1: REMOVE MATCHED PHOTO
     function removeMappedFile(nodeId, event) {
       if (event) event.stopPropagation();
       delete mappedFiles[nodeId];
@@ -711,14 +1103,11 @@
       }
     }
 
-    // FEATURE 2: IMAGE RESIZER & COMPRESSOR ENGINE
     async function processAndCompressImage(file) {
       const maxDim = parseInt(document.getElementById('compressRes').value) || 0;
       const quality = parseFloat(document.getElementById('compressQuality').value) || 0.85;
 
-      if (maxDim === 0 && quality === 1.0) {
-        return file;
-      }
+      if (maxDim === 0 && quality === 1.0) return file;
 
       return new Promise((resolve) => {
         const img = new Image();
@@ -744,13 +1133,7 @@
           ctx.drawImage(img, 0, 0, targetWidth, targetHeight);
 
           offscreenCanvas.toBlob(
-            (blob) => {
-              if (blob) {
-                resolve(blob);
-              } else {
-                resolve(file);
-              }
-            },
+            (blob) => resolve(blob || file),
             'image/jpeg',
             quality
           );
@@ -765,7 +1148,6 @@
       });
     }
 
-    // --- DIRECT LOCAL FOLDER ACCESS WITH COMPRESSION ---
     async function syncDirectToFolder() {
       if (!window.showDirectoryPicker) {
         alert("Direct Directory Sync is supported in Chrome, Edge, and Opera. For Safari/Firefox, use 'Download All as ZIP'.");
@@ -809,7 +1191,6 @@
       }
     }
 
-    // --- UNIVERSAL FALLBACK: JSZip EXPORTER WITH COMPRESSION ---
     async function exportAssetsZip() {
       if (typeof JSZip === 'undefined') {
         alert("JSZip library loading. Ensure internet connectivity to load ZIP exporter.");
@@ -849,10 +1230,8 @@
       btn.innerText = originalText;
     }
 
-    // Initialize App
     init();
     pxPerMeterInput.addEventListener('change', () => { recalculatePixelsFromMeters(); redraw(); });
-    maxConnectDistInput.addEventListener('change', redraw);
   </script>
 </body>
 </html>
