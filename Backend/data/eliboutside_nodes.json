@@ -7,7 +7,7 @@
     "title": "ELIBOUTSIDE Node 1 (standard)",
     "x": 23.06,
     "y": 14.34,
-    "heading":40,
+    "heading": 40,
     "panorama": "/assets/360/eliboutside/eliboutside_node_001.jpg",
     "targetNodes": [
       "eliboutside_node_002",
@@ -347,16 +347,21 @@
     "id": "eliboutside_node_021",
     "floor": "eliboutside",
     "zone": "mainpathway",
-    "type": "standard",
+    "type": "stair",
     "title": "ELIBOUTSIDE Node 21 (standard)",
-    "x": 86.96,
+    "x": 87.02,
     "y": 24.34,
     "heading": 4,
     "panorama": "/assets/360/eliboutside/eliboutside_node_021.jpg",
     "targetNodes": [
       "eliboutside_node_022",
       "eliboutside_node_019",
-      "eliboutside_node_023"
+      "eliboutside_node_023",
+    {
+        "targetNodeId": "f1_node_001",
+        "targetFloor": "f1",
+        "label": "Enter Building (Floor 1)"
+      }
     ],
     "targetFloor": null,
     "targetNodeId": null

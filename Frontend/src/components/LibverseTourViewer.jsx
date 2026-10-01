@@ -1,4 +1,11 @@
 import React, { useEffect, useRef } from "react";
+import {
+  Expand,
+  LocateFixed,
+  Minus,
+  Plus,
+  RotateCcw,
+} from "lucide-react";
 import { calculateHotspots } from "../utils/LibverseHotspotCalculator.js";
 
 export default function LibverseTourViewer({
@@ -10,54 +17,65 @@ export default function LibverseTourViewer({
   const viewerRef = useRef(null);
   const pannellumInstance = useRef(null);
 
-  // 1. Initialize or rebuild Pannellum viewer graph when allNodes floor dataset changes
   useEffect(() => {
-    if (!Array.isArray(allNodes) || allNodes.length === 0 || !window.pannellum) return;
+    if (
+      !Array.isArray(allNodes) ||
+      allNodes.length === 0 ||
+      !window.pannellum ||
+      !viewerRef.current
+    ) {
+      return undefined;
+    }
 
-    // Build scene graph for Pannellum from all nodes in current floor
-    const scenesConfig = {};
+    const scenes = {};
 
     allNodes.forEach((node) => {
       const hotspots = calculateHotspots(node, allNodes);
 
-      scenesConfig[node.id] = {
-        title: node.title,
+      scenes[node.id] = {
+        title: node.name || node.title || node.id,
         type: "equirectangular",
         panorama: `${apiBaseUrl}${node.panorama}`,
         autoLoad: true,
-        hotSpots: hotspots.map((hs) => ({
-          pitch: hs.pitch,
-          yaw: hs.yaw,
+        hotSpots: hotspots.map((hotspot) => ({
+          pitch: hotspot.pitch,
+          yaw: hotspot.yaw,
           type: "scene",
-          text: hs.label,
-          sceneId: hs.targetNodeId,
+          text: hotspot.label,
+          sceneId: hotspot.targetNodeId,
+          cssClass: hotspot.isPortal
+            ? "libverse-portal"
+            : "libverse-navigation",
           clickHandlerArgs: {
-            targetNodeId: hs.targetNodeId,
-            targetFloor: hs.targetFloor,
+            targetNodeId: hotspot.targetNodeId,
+            targetFloor: hotspot.targetFloor,
           },
-          clickHandlerFunc: (evt, args) => {
-            if (onNavigate) onNavigate(args.targetNodeId, args.targetFloor);
+          clickHandlerFunc: (_event, args) => {
+            onNavigate?.(args.targetNodeId, args.targetFloor);
           },
         })),
       };
     });
 
-    // Destroy existing instance before re-initializing for a new floor dataset
     if (pannellumInstance.current) {
       pannellumInstance.current.destroy();
-      pannellumInstance.current = null;
     }
 
-    const initialSceneId = currentNode ? currentNode.id : allNodes[0].id;
-
-    // Initialize Pannellum Viewer
     pannellumInstance.current = window.pannellum.viewer(viewerRef.current, {
       default: {
-        firstScene: initialSceneId,
-        sceneFadeDuration: 1000,
+        firstScene: currentNode?.id || allNodes[0].id,
+        sceneFadeDuration: 700,
         autoLoad: true,
+        compass: false,
+        showControls: false,
+        hfov: 100,
       },
-      scenes: scenesConfig,
+      scenes,
+      // Explicitly keep direct mouse/touch navigation enabled.
+      draggable: true,
+      mouseZoom: true,
+      keyboardZoom: true,
+      doubleClickZoom: true,
     });
 
     return () => {
@@ -66,25 +84,69 @@ export default function LibverseTourViewer({
         pannellumInstance.current = null;
       }
     };
-  }, [allNodes, apiBaseUrl]);
+  }, [allNodes, apiBaseUrl, onNavigate, currentNode?.id]);
 
-  // 2. Perform smooth scene loading when transitioning between nodes on the same floor
   useEffect(() => {
     if (!currentNode || !pannellumInstance.current) return;
 
     try {
-      const activeScene = pannellumInstance.current.getScene();
-      if (activeScene !== currentNode.id) {
+      if (pannellumInstance.current.getScene() !== currentNode.id) {
         pannellumInstance.current.loadScene(currentNode.id);
       }
-    } catch (err) {
-      console.warn("Pannellum scene transition error:", err);
+    } catch (error) {
+      console.warn("Pannellum scene transition failed:", error);
     }
   }, [currentNode]);
 
+  const viewerAction = (action) => {
+    const viewer = pannellumInstance.current;
+    if (!viewer) return;
+
+    try {
+      if (action === "zoomIn") viewer.setHfov(Math.max(45, viewer.getHfov() - 10));
+      if (action === "zoomOut") viewer.setHfov(Math.min(120, viewer.getHfov() + 10));
+      if (action === "reset") {
+        viewer.setYaw(currentNode?.heading || 0);
+        viewer.setPitch(0);
+        viewer.setHfov(100);
+      }
+      if (action === "center") {
+        viewer.setYaw(currentNode?.heading || 0);
+        viewer.setPitch(0);
+      }
+      if (action === "fullscreen") {
+        viewer.toggleFullscreen();
+      }
+    } catch (error) {
+      console.warn("Viewer control failed:", error);
+    }
+  };
+
   return (
-    <div style={{ width: "100%", height: "100vh", position: "relative" }}>
-      <div ref={viewerRef} style={{ width: "100%", height: "100%" }} />
+    <div className="libverse-tour-viewer">
+      <div
+        ref={viewerRef}
+        className="libverse-pannellum-host"
+        aria-label="Libverse 360 panorama"
+      />
+
+      <div className="libverse-viewer-toolbar">
+        <button onClick={() => viewerAction("zoomIn")} title="Zoom in">
+          <Plus size={18} />
+        </button>
+        <button onClick={() => viewerAction("zoomOut")} title="Zoom out">
+          <Minus size={18} />
+        </button>
+        <button onClick={() => viewerAction("center")} title="Face forward">
+          <LocateFixed size={18} />
+        </button>
+        <button onClick={() => viewerAction("reset")} title="Reset view">
+          <RotateCcw size={18} />
+        </button>
+        <button onClick={() => viewerAction("fullscreen")} title="Fullscreen">
+          <Expand size={18} />
+        </button>
+      </div>
     </div>
   );
 }

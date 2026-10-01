@@ -1,15 +1,24 @@
-import os
 import json
+import os
+
 from fastapi import FastAPI, HTTPException
-from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+
+BASE_DIR = os.path.dirname(__file__)
+DATA_DIR = os.path.join(BASE_DIR, "data")
+ASSETS_DIR = os.path.join(BASE_DIR, "assets")
+PANORAMA_DIR = os.path.join(ASSETS_DIR, "360")
+MAP_DIR = os.path.join(ASSETS_DIR, "maps")
+
+os.makedirs(PANORAMA_DIR, exist_ok=True)
+os.makedirs(MAP_DIR, exist_ok=True)
 
 app = FastAPI(
     title="Libverse 360 Tour API",
-    description="Backend service serving node graph data and 360 panorama assets for Pannellum."
+    description="Backend for the Libverse 360 directory and mall-kiosk UI.",
 )
 
-# Enable CORS for local React development
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -18,46 +27,61 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Static file serving for 360 panorama images
-ASSETS_DIR = os.path.join(os.path.dirname(__file__), "assets", "360")
-os.makedirs(ASSETS_DIR, exist_ok=True)
-app.mount("/assets/360", StaticFiles(directory=ASSETS_DIR), name="360_assets")
+app.mount("/assets/360", StaticFiles(directory=PANORAMA_DIR), name="360_assets")
+app.mount("/assets/maps", StaticFiles(directory=MAP_DIR), name="map_assets")
 
-# Static file serving for 2D floor maps
-MAPS_DIR = os.path.join(os.path.dirname(__file__), "assets", "maps")
-os.makedirs(MAPS_DIR, exist_ok=True)
-app.mount("/assets/maps", StaticFiles(directory=MAPS_DIR), name="maps_assets")
 
 @app.get("/")
 def root_status():
     return {"status": "Libverse Server is online and operational."}
 
 
+@app.get("/api/floors")
+def get_floors():
+    files = []
+
+    if not os.path.isdir(DATA_DIR):
+        return {"floors": files}
+
+    for filename in sorted(os.listdir(DATA_DIR)):
+        if filename.endswith("_nodes.json"):
+            files.append(filename.removesuffix("_nodes.json"))
+
+    return {"floors": files}
+
+
 @app.get("/api/floors/{floor_id}/nodes")
 def get_floor_nodes(floor_id: str):
-    """
-    Reads node map JSON generated from Node Maker.
-    Example: GET /api/floors/eliboutside/nodes
-    Looks for: backend/data/eliboutside_nodes.json
-    """
-    json_path = os.path.join(os.path.dirname(__file__), "data", f"{floor_id}_nodes.json")
-    
+    json_path = os.path.join(DATA_DIR, f"{floor_id}_nodes.json")
+
     if not os.path.exists(json_path):
         raise HTTPException(
-            status_code=404, 
-            detail=f"Node map file '{floor_id}_nodes.json' was not found in backend/data/ directory."
+            status_code=404,
+            detail=f"Node map file '{floor_id}_nodes.json' was not found.",
         )
-    
-    with open(json_path, "r", encoding="utf-8") as f:
-        node_data = json.load(f)
-        
+
+    try:
+        with open(json_path, "r", encoding="utf-8") as file:
+            node_data = json.load(file)
+    except json.JSONDecodeError as error:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Invalid JSON in {floor_id}_nodes.json: {error}",
+        ) from error
+
     return {
         "floor": floor_id,
         "total_nodes": len(node_data),
-        "nodes": node_data
+        "nodes": node_data,
     }
 
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run("LibverseServer:app", host="0.0.0.0", port=8000, reload=True)
+
+    uvicorn.run(
+        "LibverseServer:app",
+        host="0.0.0.0",
+        port=8000,
+        reload=True,
+    )

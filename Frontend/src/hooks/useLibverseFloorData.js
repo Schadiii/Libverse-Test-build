@@ -1,6 +1,9 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 
-export function useLibverseFloorData(initialFloor = "eliboutside", apiBaseUrl = "http://localhost:8000") {
+export function useLibverseFloorData(
+  initialFloor = "eliboutside",
+  apiBaseUrl = "http://localhost:8000"
+) {
   const [currentFloor, setCurrentFloor] = useState(initialFloor);
   const [nodesData, setNodesData] = useState([]);
   const [currentNodeId, setCurrentNodeId] = useState(null);
@@ -8,39 +11,46 @@ export function useLibverseFloorData(initialFloor = "eliboutside", apiBaseUrl = 
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    let isMounted = true;
+    let mounted = true;
+
     setIsLoading(true);
+    setError(null);
 
     fetch(`${apiBaseUrl}/api/floors/${currentFloor}/nodes`)
-      .then((res) => {
-        if (!res.ok) throw new Error(`HTTP ${res.status}: Failed to fetch floor dataset`);
-        return res.json();
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(
+            `HTTP ${response.status}: Failed to load ${currentFloor}`
+          );
+        }
+        return response.json();
       })
       .then((data) => {
-        if (!isMounted) return;
+        if (!mounted) return;
 
-        const nodesArray = data.nodes || [];
-        setNodesData(nodesArray);
+        const nodes = Array.isArray(data.nodes) ? data.nodes : [];
+        setNodesData(nodes);
 
-        setCurrentNodeId((prevNodeId) => {
-          const targetExistsInNewFloor = nodesArray.some((n) => n.id === prevNodeId);
-          if (prevNodeId && targetExistsInNewFloor) {
-            return prevNodeId;
+        setCurrentNodeId((previous) => {
+          if (previous && nodes.some((node) => node.id === previous)) {
+            return previous;
           }
-          return nodesArray.length > 0 ? nodesArray[0].id : null;
+          return nodes[0]?.id || null;
         });
 
         setIsLoading(false);
       })
-      .catch((err) => {
-        if (!isMounted) return;
-        console.error("Dataset load error:", err);
-        setError(err.message);
+      .catch((loadError) => {
+        if (!mounted) return;
+        console.error(loadError);
+        setError(loadError.message);
+        setNodesData([]);
+        setCurrentNodeId(null);
         setIsLoading(false);
       });
 
     return () => {
-      isMounted = false;
+      mounted = false;
     };
   }, [currentFloor, apiBaseUrl]);
 
@@ -50,15 +60,18 @@ export function useLibverseFloorData(initialFloor = "eliboutside", apiBaseUrl = 
     if (targetFloor && targetFloor !== currentFloor) {
       setCurrentFloor(targetFloor);
       setCurrentNodeId(targetNodeId);
-    } else {
-      setCurrentNodeId(targetNodeId);
+      return;
     }
+
+    setCurrentNodeId(targetNodeId);
   };
 
-  const currentNode = nodesData.find((n) => n.id === currentNodeId);
+  const currentNode =
+    nodesData.find((node) => node.id === currentNodeId) || null;
 
   return {
     currentFloor,
+    setCurrentFloor,
     currentNode,
     currentNodeId,
     nodesData,
