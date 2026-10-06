@@ -3,22 +3,21 @@
     "id": "f1_node_001",
     "floor": "f1",
     "zone": "main_hall",
-    "type": "stair",
+    "type": "door",
     "title": "F1 Node 1 (standard)",
     "x": 87.26,
-    "y": 28.84,
+    "y": 28.44,
     "heading": 359,
     "panorama": "/assets/360/f1/node_001.jpg",
     "targetNodes": [
       "f1_node_002",
-    {
+      {
         "targetNodeId": "eliboutside_node_021",
         "targetFloor": "eliboutside",
         "label": "Exit Outside",
         "yaw": 90,
         "pitch": -5
       }
-        
     ],
     "targetFloor": null,
     "targetNodeId": null
@@ -46,8 +45,8 @@
     "zone": "main_hall",
     "type": "standard",
     "title": "F1 Node 3 (standard)",
-    "x": 88.02,
-    "y": 32.52,
+    "x": 87.4,
+    "y": 33.34,
     "heading": 0,
     "panorama": "/assets/360/f1/node_003.jpg",
     "targetNodes": [
@@ -63,8 +62,8 @@
     "zone": "main_hall",
     "type": "standard",
     "title": "F1 Node 4 (standard)",
-    "x": 88.02,
-    "y": 35.6,
+    "x": 87.32,
+    "y": 36.04,
     "heading": 0,
     "panorama": "/assets/360/f1/node_004.jpg",
     "targetNodes": [
@@ -80,8 +79,8 @@
     "zone": "main_hall",
     "type": "standard",
     "title": "F1 Node 5 (standard)",
-    "x": 85.91,
-    "y": 39.71,
+    "x": 85.26,
+    "y": 39.44,
     "heading": 0,
     "panorama": "/assets/360/f1/node_005.jpg",
     "targetNodes": [
@@ -97,13 +96,15 @@
     "zone": "main_hall",
     "type": "standard",
     "title": "F1 Node 6 (standard)",
-    "x": 85.52,
-    "y": 36.94,
-    "heading": 0,
+    "x": 85.14,
+    "y": 35.98,
+    "heading": 267,
     "panorama": "/assets/360/f1/node_006.jpg",
     "targetNodes": [
       "f1_node_004",
-      "f1_node_005"
+      "f1_node_005",
+      "f1_node_007",
+      "f1_node_011"
     ],
     "targetFloor": null,
     "targetNodeId": null
@@ -114,14 +115,15 @@
     "zone": "main_hall",
     "type": "standard",
     "title": "F1 Node 7 (standard)",
-    "x": 82.02,
-    "y": 39.82,
+    "x": 81.88,
+    "y": 38.76,
     "heading": 0,
     "panorama": "/assets/360/f1/node_007.jpg",
     "targetNodes": [
       "f1_node_005",
       "f1_node_008",
-      "f1_node_012"
+      "f1_node_012",
+      "f1_node_006"
     ],
     "targetFloor": null,
     "targetNodeId": null
@@ -182,13 +184,14 @@
     "zone": "main_hall",
     "type": "standard",
     "title": "F1 Node 11 (standard)",
-    "x": 76.66,
-    "y": 36.02,
-    "heading": 0,
+    "x": 77.32,
+    "y": 32.46,
+    "heading": 268,
     "panorama": "/assets/360/f1/node_011.jpg",
     "targetNodes": [
       "f1_node_012",
-      "f1_node_057"
+      "f1_node_057",
+      "f1_node_006"
     ],
     "targetFloor": null,
     "targetNodeId": null
@@ -199,8 +202,8 @@
     "zone": "main_hall",
     "type": "standard",
     "title": "F1 Node 12 (standard)",
-    "x": 76.66,
-    "y": 38.74,
+    "x": 77.26,
+    "y": 38.6,
     "heading": 0,
     "panorama": "/assets/360/f1/node_012.jpg",
     "targetNodes": [
@@ -217,9 +220,9 @@
     "zone": "main_hall",
     "type": "standard",
     "title": "F1 Node 13 (standard)",
-    "x": 71.74,
-    "y": 38.36,
-    "heading": 0,
+    "x": 73.14,
+    "y": 38.74,
+    "heading": 267,
     "panorama": "/assets/360/f1/node_013.jpg",
     "targetNodes": [
       "f1_node_012",
@@ -236,13 +239,14 @@
     "zone": "main_hall",
     "type": "standard",
     "title": "F1 Node 14 (standard)",
-    "x": 69.46,
-    "y": 38.18,
-    "heading": 0,
+    "x": 68.94,
+    "y": 38.56,
+    "heading": 270,
     "panorama": "/assets/360/f1/node_014.jpg",
     "targetNodes": [
       "f1_node_013",
-      "f1_node_015"
+      "f1_node_015",
+      "f1_node_059"
     ],
     "targetFloor": null,
     "targetNodeId": null
@@ -355,8 +359,8 @@
     "zone": "main_hall",
     "type": "standard",
     "title": "F1 Node 21 (standard)",
-    "x": 54.6,
-    "y": 46.04,
+    "x": 54.46,
+    "y": 45,
     "heading": 0,
     "panorama": "/assets/360/f1/node_021.jpg",
     "targetNodes": [
@@ -371,7 +375,7 @@
     "id": "f1_node_022",
     "floor": "f1",
     "zone": "main_hall",
-    "type": "standard",
+    "type": "stair",
     "title": "F1 Node 22 (standard)",
     "x": 54.42,
     "y": 48.58,
@@ -406,7 +410,7 @@
     "id": "f1_node_024",
     "floor": "f1",
     "zone": "main_hall",
-    "type": "standard",
+    "type": "pwd",
     "title": "F1 Node 24 (standard)",
     "x": 60.92,
     "y": 48.17,
@@ -458,9 +462,9 @@
     "zone": "main_hall",
     "type": "standard",
     "title": "F1 Node 27 (standard)",
-    "x": 54.62,
-    "y": 43.78,
-    "heading": 0,
+    "x": 54.48,
+    "y": 42.82,
+    "heading": 2,
     "panorama": "/assets/360/f1/node_027.jpg",
     "targetNodes": [
       "f1_node_028",
@@ -826,8 +830,8 @@
     "zone": "main_hall",
     "type": "standard",
     "title": "F1 Node 48 (standard)",
-    "x": 42.33,
-    "y": 45.06,
+    "x": 41.82,
+    "y": 43.94,
     "heading": 0,
     "panorama": "/assets/360/f1/node_048.jpg",
     "targetNodes": [
@@ -877,7 +881,7 @@
     "title": "F1 Node 51 (standard)",
     "x": 55.26,
     "y": 30.78,
-    "heading": 0,
+    "heading": 181,
     "panorama": "/assets/360/f1/node_051.jpg",
     "targetNodes": [
       "f1_node_065",
@@ -895,11 +899,12 @@
     "title": "F1 Node 52 (standard)",
     "x": 59.95,
     "y": 31.05,
-    "heading": 0,
+    "heading": 182,
     "panorama": "/assets/360/f1/node_052.jpg",
     "targetNodes": [
       "f1_node_051",
-      "f1_node_053"
+      "f1_node_053",
+      "f1_node_066"
     ],
     "targetFloor": null,
     "targetNodeId": null
@@ -912,7 +917,7 @@
     "title": "F1 Node 53 (standard)",
     "x": 59.76,
     "y": 26.94,
-    "heading": 0,
+    "heading": 179,
     "panorama": "/assets/360/f1/node_053.jpg",
     "targetNodes": [
       "f1_node_052",
@@ -930,7 +935,7 @@
     "title": "F1 Node 54 (standard)",
     "x": 55.24,
     "y": 26.82,
-    "heading": 0,
+    "heading": 178,
     "panorama": "/assets/360/f1/node_054.jpg",
     "targetNodes": [
       "f1_node_051",
@@ -948,7 +953,7 @@
     "title": "F1 Node 55 (standard)",
     "x": 55.44,
     "y": 22.14,
-    "heading": 0,
+    "heading": 185,
     "panorama": "/assets/360/f1/node_055.jpg",
     "targetNodes": [
       "f1_node_056",
@@ -965,7 +970,7 @@
     "title": "F1 Node 56 (standard)",
     "x": 60.32,
     "y": 21.84,
-    "heading": 0,
+    "heading": 179,
     "panorama": "/assets/360/f1/node_056.jpg",
     "targetNodes": [
       "f1_node_055",
@@ -982,12 +987,13 @@
     "title": "F1 Node 57 (standard)",
     "x": 72.98,
     "y": 32.24,
-    "heading": 0,
+    "heading": 184,
     "panorama": "/assets/360/f1/node_057.jpg",
     "targetNodes": [
       "f1_node_011",
       "f1_node_058",
-      "f1_node_013"
+      "f1_node_013",
+      "f1_node_059"
     ],
     "targetFloor": null,
     "targetNodeId": null
@@ -1000,7 +1006,7 @@
     "title": "F1 Node 58 (standard)",
     "x": 72.78,
     "y": 28.54,
-    "heading": 0,
+    "heading": 178,
     "panorama": "/assets/360/f1/node_058.jpg",
     "targetNodes": [
       "f1_node_057",
@@ -1015,14 +1021,16 @@
     "zone": "main_hall",
     "type": "standard",
     "title": "F1 Node 59 (standard)",
-    "x": 68.86,
-    "y": 32.44,
-    "heading": 0,
+    "x": 69.1,
+    "y": 34.62,
+    "heading": 181,
     "panorama": "/assets/360/f1/node_059.jpg",
     "targetNodes": [
       "f1_node_060",
       "f1_node_013",
-      "f1_node_066"
+      "f1_node_066",
+      "f1_node_057",
+      "f1_node_014"
     ],
     "targetFloor": null,
     "targetNodeId": null
@@ -1035,7 +1043,7 @@
     "title": "F1 Node 60 (standard)",
     "x": 68.77,
     "y": 28.15,
-    "heading": 0,
+    "heading": 179,
     "panorama": "/assets/360/f1/node_060.jpg",
     "targetNodes": [
       "f1_node_059",
@@ -1048,11 +1056,11 @@
     "id": "f1_node_061",
     "floor": "f1",
     "zone": "main_hall",
-    "type": "standard",
+    "type": "pwd",
     "title": "F1 Node 61 (standard)",
-    "x": 75.38,
-    "y": 21.64,
-    "heading": 0,
+    "x": 75.3,
+    "y": 21.7,
+    "heading": 182,
     "panorama": "/assets/360/f1/node_061.jpg",
     "targetNodes": [
       "f1_node_058",
@@ -1067,9 +1075,9 @@
     "zone": "main_hall",
     "type": "standard",
     "title": "F1 Node 62 (standard)",
-    "x": 69.07,
-    "y": 21.94,
-    "heading": 0,
+    "x": 68.76,
+    "y": 21.8,
+    "heading": 179,
     "panorama": "/assets/360/f1/node_062.jpg",
     "targetNodes": [
       "f1_node_060",
@@ -1082,7 +1090,7 @@
     "id": "f1_node_063",
     "floor": "f1",
     "zone": "main_hall",
-    "type": "standard",
+    "type": "pwd",
     "title": "F1 Node 63 (standard)",
     "x": 36.32,
     "y": 35.35,
@@ -1137,11 +1145,12 @@
     "title": "F1 Node 66 (standard)",
     "x": 64.66,
     "y": 35.46,
-    "heading": 0,
+    "heading": 181,
     "panorama": "/assets/360/f1/node_066.jpg",
     "targetNodes": [
       "f1_node_059",
-      "f1_node_067"
+      "f1_node_067",
+      "f1_node_052"
     ],
     "targetFloor": null,
     "targetNodeId": null
