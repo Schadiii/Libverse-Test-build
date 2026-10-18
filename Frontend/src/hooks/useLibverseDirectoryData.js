@@ -168,36 +168,51 @@ export function useLibverseDirectoryData({
 }) {
   const [allNodesByFloor, setAllNodesByFloor] = useState({});
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     let mounted = true;
 
     async function loadDirectoryData() {
       setLoading(true);
+      setError(null);
 
-      const entries = await Promise.all(
-        floors.map(async (floor) => {
-          try {
+      try {
+        const entries = await Promise.all(
+          floors.map(async (floor) => {
             const response = await fetch(
               `${apiBaseUrl}/api/floors/${floor}/nodes`
             );
 
-            if (!response.ok) return [floor, []];
+            if (!response.ok) {
+              throw new Error(
+                `HTTP ${response.status}: Failed to load ${floor}`
+              );
+            }
 
             const data = await response.json();
-            return [
-              floor,
-              (Array.isArray(data.nodes) ? data.nodes : []).map(normalizeNode),
-            ];
-          } catch {
-            return [floor, []];
-          }
-        })
-      );
 
-      if (mounted) {
+            if (!Array.isArray(data.nodes)) {
+              throw new Error(`Invalid node data received for ${floor}`);
+            }
+
+            return [floor, data.nodes.map(normalizeNode)];
+          })
+        );
+
+        if (!mounted) return;
+
         setAllNodesByFloor(Object.fromEntries(entries));
-        setLoading(false);
+      } catch (loadError) {
+        if (!mounted) return;
+
+        console.error("Failed to load directory data:", loadError);
+        setError(loadError.message);
+        setAllNodesByFloor({});
+      } finally {
+        if (mounted) {
+          setLoading(false);
+        }
       }
     }
 
@@ -256,6 +271,7 @@ export function useLibverseDirectoryData({
     routeDistance,
     routeNodeCount,
     loading,
+    error,
   };
 }
 

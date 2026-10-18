@@ -22,6 +22,8 @@ const API_BASE_URL =
 const FLOORS = [
   { id: "eliboutside", label: "Outside", short: "OUT" },
   { id: "f1", label: "Floor 1", short: "F1" },
+  { id: "f3", label: "Floor 3", short: "F3" },
+  { id: "f4", label: "Floor 4", short: "F4" },
 ];
 
 function floorLabel(floorId) {
@@ -47,7 +49,6 @@ export default function LibverseApp() {
   } = useLibverseFloorData("eliboutside", API_BASE_URL);
 
   const {
-    allNodesByFloor,
     allNodes,
     searchResults,
     route,
@@ -99,7 +100,6 @@ export default function LibverseApp() {
           allNodes={nodesData}
           onNavigate={handleNodeTransition}
           apiBaseUrl={API_BASE_URL}
-          routeNodeIds={activeRoute.map((n) => n.id)}
         />
       </section>
 
@@ -208,11 +208,9 @@ export default function LibverseApp() {
       {directoryOpen && (
         <LibverseDirectory
           currentFloor={currentFloor}
-          currentNode={currentNode}
           nodes={allNodes}
           onClose={() => setDirectoryOpen(false)}
           onSelect={setSelectedDestination}
-          onNavigate={navigateToNode}
         />
       )}
 
@@ -263,7 +261,6 @@ export default function LibverseApp() {
         <LibverseDestinationPanel
           destination={selectedDestination}
           currentNode={currentNode}
-          currentFloor={currentFloor}
           routeDistance={routeDistance}
           routeNodeCount={routeNodeCount}
           route={route}

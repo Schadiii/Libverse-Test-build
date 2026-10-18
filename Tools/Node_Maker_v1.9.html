@@ -1,0 +1,1406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Libverse Node Maker v1.9 — Grid, Alignment & Validation</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: #181818; color: #e0e0e0; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+
+    header { background: #222; border-bottom: 1px solid #333; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; height: 50px; flex-shrink: 0; }
+    .brand { font-weight: bold; font-size: 16px; color: #007acc; display: flex; align-items: center; gap: 8px; }
+    .tabs { display: flex; height: 100%; }
+    .tab-btn { background: transparent; border: none; color: #888; padding: 0 20px; font-size: 13px; font-weight: 600; cursor: pointer; border-bottom: 3px solid transparent; transition: all 0.2s; }
+    .tab-btn:hover { color: #fff; background: #2a2a2a; }
+    .tab-btn.active { color: #00aaff; border-bottom-color: #00aaff; background: #1e1e1e; }
+
+    .view-container { flex: 1; display: none; height: calc(100vh - 50px); overflow: hidden; }
+    .view-container.active { display: flex; }
+
+    #canvas-container { flex: 1; overflow: auto; padding: 20px; background: #121212; position: relative; display: flex; justify-content: center; align-items: center; }
+    canvas { border: 1px solid #333; cursor: crosshair; background: #1a1a1a; box-shadow: 0 4px 20px rgba(0,0,0,0.5); transform-origin: center center; }
+    #sidebar { width: 420px; background: #222; border-left: 1px solid #333; padding: 16px; display: flex; flex-direction: column; gap: 12px; overflow-y: auto; flex-shrink: 0; }
+
+    .panel { background: #1a1a1a; padding: 12px; border-radius: 6px; border: 1px solid #2e2e2e; display: flex; flex-direction: column; gap: 8px; }
+    .panel-title { font-size: 12px; font-weight: bold; color: #00aaff; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px; display: flex; justify-content: space-between; align-items: center; }
+    
+    label { font-size: 11px; color: #aaa; margin-bottom: -4px; }
+    input, select, textarea { padding: 8px; background: #282828; border: 1px solid #444; color: #fff; border-radius: 4px; font-size: 12px; outline: none; }
+    input:focus, select:focus, textarea:focus { border-color: #007acc; }
+    textarea { height: 120px; font-family: monospace; font-size: 11px; resize: vertical; color: #00ff66; transition: border-color 0.2s; }
+
+    .row { display: flex; gap: 8px; }
+    .row > * { flex: 1; }
+
+    button { padding: 8px 12px; background: #007acc; color: white; border: none; cursor: pointer; font-weight: bold; border-radius: 4px; font-size: 12px; transition: background 0.2s; }
+    button:hover { background: #005999; }
+    button.success { background: #28a745; } button.success:hover { background: #218838; }
+    button.danger { background: #dc3545; } button.danger:hover { background: #c82333; }
+    button.secondary { background: #444; } button.secondary:hover { background: #555; }
+
+    .legend { display: flex; gap: 8px; font-size: 10px; flex-wrap: wrap; background: #121212; padding: 6px; border-radius: 4px; border: 1px solid #282828; }
+    .legend-item { display: flex; align-items: center; gap: 4px; }
+    .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+
+    .inspector-panel { border-color: #007acc; background: #16222e; }
+    .thumb-preview { width: 100%; height: 90px; object-fit: cover; border-radius: 4px; border: 1px solid #444; background: #000; display: none; }
+
+    #renamer-container { flex: 1; padding: 24px; overflow-y: auto; background: #181818; display: flex; flex-direction: column; gap: 16px; }
+    .renamer-toolbar { display: flex; gap: 12px; background: #222; padding: 16px; border-radius: 8px; border: 1px solid #333; align-items: center; justify-content: space-between; flex-wrap: wrap; }
+    
+    .asset-grid { display: flex; flex-direction: column; gap: 8px; }
+    .asset-row { display: flex; align-items: center; gap: 16px; background: #222; border: 1px solid #333; padding: 12px; border-radius: 6px; }
+    .asset-info { flex: 1; display: flex; flex-direction: column; gap: 4px; }
+    .asset-id { font-weight: bold; color: #00aaff; font-size: 13px; }
+    .asset-path { font-size: 11px; color: #888; font-family: monospace; }
+    
+    .drop-zone { width: 220px; height: 60px; border: 2px dashed #555; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #aaa; text-align: center; padding: 4px; cursor: pointer; transition: all 0.2s; background: #1a1a1a; position: relative; overflow: hidden; }
+    .drop-zone:hover, .drop-zone.dragover { border-color: #00aaff; background: #202b36; color: #fff; }
+    .drop-zone img { width: 100%; height: 100%; object-fit: cover; position: absolute; top:0; left:0; opacity: 0.6; }
+    .drop-zone span { position: relative; z-index: 2; font-weight: bold; text-shadow: 0 1px 3px rgba(0,0,0,0.8); }
+
+    .tool-toggle { display:flex; align-items:center; gap:7px; font-size:11px; color:#ddd; }
+    .tool-toggle input { width:auto; accent-color:#00aaff; }
+    .guide-note { color:#aaa; font-size:10px; line-height:1.4; }
+    .validation-report { display:none; white-space:pre-wrap; font:11px/1.5 ui-monospace, SFMono-Regular, Consolas, monospace; max-height:260px; overflow:auto; padding:9px; background:#101010; border:1px solid #333; border-radius:4px; }
+    .validation-report .ok { color:#00ff66; }
+    .validation-report .warn { color:#ffcc66; }
+    .validation-report .error { color:#ff6b6b; }
+    .transition-select { width:100%; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="brand">📌 Node Maker v1.9 - Grid Snap, Smart Align & Data Validation</div>
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('editor')">Tab 1: Node Generator & Map Editor</button>
+      <button class="tab-btn" onclick="switchTab('renamer')">Tab 2: 360 Asset Renamer & Sync</button>
+    </div>
+  </header>
+
+  <div id="view-editor" class="view-container active">
+    <div id="canvas-container">
+      <canvas id="floorplan"></canvas>
+    </div>
+
+    <div id="sidebar">
+      <div class="panel">
+        <div class="panel-title">1. Floorplan Configuration</div>
+        <label>Select Floor Plan Image</label>
+        <input type="file" id="fileInput" accept="image/*">
+
+        <!-- Display Zoom & Viewport Controls -->
+        <div style="background: #121212; padding: 8px; border-radius: 4px; border: 1px solid #282828; margin-top: 4px; display: flex; flex-direction: column; gap: 6px;">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <label style="color:#00aaff; font-weight:bold;">Viewport Zoom:</label>
+            <span id="zoomVal" style="font-size:11px; font-family:monospace; color:#fff;">100%</span>
+          </div>
+          <div class="row" style="align-items: center;">
+            <input type="range" id="zoomSlider" min="10" max="200" value="100" style="flex:2;">
+            <button class="secondary" onclick="fitImageToScreen()" style="padding:4px 8px; font-size:10px;">🔍 Fit to View</button>
+          </div>
+        </div>
+
+        <!-- Adaptive Node Marker Scaling Control -->
+        <div style="background: #121212; padding: 8px; border-radius: 4px; border: 1px solid #282828; display: flex; flex-direction: column; gap: 6px;">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <label style="color:#00ff66; font-weight:bold;">Node Marker Size Scale:</label>
+            <span id="nodeSizeVal" style="font-size:11px; font-family:monospace; color:#fff;">100%</span>
+          </div>
+          <div class="row" style="align-items: center;">
+            <input type="range" id="nodeSizeSlider" min="30" max="350" value="100" style="flex:2;">
+            <button class="secondary" onclick="resetNodeSizeScale()" style="padding:4px 8px; font-size:10px;">↺ Auto Baseline</button>
+          </div>
+        </div>
+
+        <div style="background:#121212;padding:8px;border-radius:4px;border:1px solid #282828;display:flex;flex-direction:column;gap:7px;">
+          <div style="color:#00aaff;font-size:11px;font-weight:bold;">Node Placement Assistance</div>
+          <label class="tool-toggle"><input type="checkbox" id="gridSnapToggle"> Grid Snap (off by default)</label>
+          <div class="row" style="align-items:center;"><label for="gridSizeInput">Grid spacing (px)</label><input type="number" id="gridSizeInput" min="2" max="500" step="1" value="20"></div>
+          <label class="tool-toggle"><input type="checkbox" id="smartAlignToggle"> Smart Align (off by default)</label>
+          <div class="row" style="align-items:center;"><label for="alignToleranceInput">Align tolerance (px)</label><input type="number" id="alignToleranceInput" min="1" max="100" value="8"></div>
+          <div class="guide-note">Grid Snap and Smart Align are independent. Guides appear while dragging; heading rotation and meter coordinates remain intact.</div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label>Floor ID</label>
+            <input type="text" id="floorPrefix" value="f1" placeholder="e.g. f1">
+          </div>
+          <div>
+            <label>Px / Meter Ratio</label>
+            <input type="number" id="pxPerMeter" value="50">
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-title">2. Pathing & Schema Engine</div>
+        <label>Panorama Path Schema Template</label>
+        <input type="text" id="pathTemplateInput" value="/assets/360/{floor}/node_{num}.jpg" placeholder="/assets/360/{floor}/node_{num}.jpg">
+        <button class="secondary" onclick="applyBulkPathRemap()">⚡ Bulk Re-map All Image Paths</button>
+        <div style="font-size: 11px; color: #00aaff; margin-top: 4px; line-height: 1.4;">
+          💡 <strong>Controls:</strong><br>
+          • <strong>Click + Drag Node:</strong> Move single or selected group.<br>
+          • <strong>Box Select:</strong> Drag on empty space to multi-select.<br>
+          • <strong>Shift + Click Node:</strong> Toggle multi-selection.<br>
+          • <strong>Shift + Drag Node:</strong> Toggle path connection.
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-title">3. Zone Preset Manager</div>
+        <label>Select Active Zone</label>
+        <select id="zoneSelect"></select>
+
+        <div class="row">
+          <input type="text" id="newZoneInput" placeholder="New Zone ID (e.g. mainpathway)">
+          <button class="secondary" onclick="addNewZone()">+ Add Zone</button>
+        </div>
+
+        <label>Active Node Type</label>
+        <select id="nodeTypeSelect">
+          <option value="standard">Standard Path (Red)</option>
+          <option value="door">Doorway / Gateway Passage (Yellow)</option>
+          <option value="stair">Stairs / Inter-floor Portal (Blue)</option>
+          <option value="pwd">PWD / Accessible Ramp / Elevator (Green)</option>
+          <option value="fire_exit">Fire Exit (Orange)</option>
+          <option value="fire_extinguisher">Fire Extinguisher (Red-orange)</option>
+        </select>
+
+        <div class="legend">
+          <span class="legend-item"><span class="dot" style="background:#ff0055;"></span> Standard</span>
+          <span class="legend-item"><span class="dot" style="background:#ffaa00;"></span> Gateway</span>
+          <span class="legend-item"><span class="dot" style="background:#00aaff;"></span> Stair</span>
+          <span class="legend-item"><span class="dot" style="background:#00ff66;"></span> PWD</span>
+          <span class="legend-item"><span class="dot" style="background:#ff8800;"></span> Fire Exit</span>
+          <span class="legend-item"><span class="dot" style="background:#ff5533;"></span> Extinguisher</span>
+        </div>
+      </div>
+
+      <div class="panel inspector-panel">
+        <div class="panel-title">4. Node Inspector</div>
+        <div id="inspectorContent" style="font-size:12px; color:#aaa;">No node selected. Click any canvas marker to inspect or modify properties.</div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-title">5. JSON Map Export & Import</div>
+        <textarea id="output" placeholder="Paste JSON here, drag & drop a .json file here, or click Upload / Import JSON below..."></textarea>
+        <input type="file" id="jsonFileInput" accept=".json" style="display: none;">
+        
+        <div class="row">
+          <button class="success" onclick="importJSON()">Upload / Import JSON</button>
+          <button class="success" onclick="downloadJSON()">Download nodes.json</button>
+        </div>
+        <div class="row" style="margin-top: 4px;">
+          <button onclick="copyJSON()">Copy Raw Text</button>
+          <button class="danger" onclick="clearAllNodes()">Clear All</button>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-title">6. Read-only Data Validator</div>
+        <div style="font-size:11px;color:#aaa;line-height:1.4;">Checks structure, IDs, references, floor transitions, coordinates, panorama paths, and node types. This never edits or auto-fixes your JSON.</div>
+        <button class="secondary" onclick="validateNodeData()">Run Validation</button>
+        <div id="validationReport" class="validation-report" role="status" aria-live="polite"></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="view-renamer" class="view-container">
+    <div id="renamer-container">
+      <div class="renamer-toolbar">
+        <div>
+          <h3 style="color:#00aaff; margin-bottom:4px;">360° Photo Asset Matcher & Resizer</h3>
+          <p style="font-size:12px; color:#aaa;">Match photos, remove unneeded assignments, and automatically compress high-res photos for web performance before downloading.</p>
+        </div>
+
+        <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+          <div style="display:flex; flex-direction:column; gap:2px;">
+            <label style="font-size:10px; color:#aaa;">Web Resizer Max Width:</label>
+            <select id="compressRes" style="padding:4px; font-size:11px;">
+              <option value="4096" selected>4K Web (4096px - Recommended)</option>
+              <option value="2048">2K Web (2048px - Ultra Fast)</option>
+              <option value="8192">8K High Res (8192px)</option>
+              <option value="0">Original (No Resizing)</option>
+            </select>
+          </div>
+
+          <div style="display:flex; flex-direction:column; gap:2px;">
+            <label style="font-size:10px; color:#aaa;">JPEG Quality:</label>
+            <select id="compressQuality" style="padding:4px; font-size:11px;">
+              <option value="0.85" selected>85% Quality (Balanced)</option>
+              <option value="0.75">75% Quality (Smaller Size)</option>
+              <option value="0.92">92% Quality (High Detail)</option>
+              <option value="1.0">100% Quality (Lossless)</option>
+            </select>
+          </div>
+
+          <button class="success" onclick="syncDirectToFolder()" id="btnSync">📁 Select Local Directory (Direct Sync)</button>
+          <button onclick="exportAssetsZip()" id="btnZip">📦 Download All as ZIP</button>
+        </div>
+      </div>
+
+      <div class="asset-grid" id="assetGrid">
+        <div style="color:#666; font-size:13px; text-align:center; padding:40px;">No nodes loaded. Add nodes on Tab 1 or import a nodes.json file first.</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let img = new Image();
+    let nodes = [];
+    let selectedIndex = -1;
+    let selectedIndices = new Set();
+    let zones = ['main_hall', 'mainpathway', 'elib_section_1', 'stairwell'];
+    let mappedFiles = {};
+
+    let isConnecting = false;
+    let connectStartNode = null;
+    let dragCurrentMouse = { x: 0, y: 0 };
+
+    let isDraggingHeading = false;
+    let isDraggingNode = false;
+    let isBoxSelecting = false;
+    let dragStartPos = { x: 0, y: 0 };
+    let boxStartPos = { x: 0, y: 0 };
+    let boxCurrentPos = { x: 0, y: 0 };
+    let nodeDragOrigins = [];
+    let alignmentGuides = [];
+
+    let displayZoom = 1.0;
+    let userMarkerScaleMultiplier = 1.0;
+    let autoResolutionScale = 1.0;
+
+    const typeColors = {
+      standard: '#ff0055',
+      door: '#ffaa00',
+      stair: '#00aaff',
+      pwd: '#00ff66',
+      fire_exit: '#ff8800',
+      fire_extinguisher: '#ff5533'
+    };
+
+    const canvas = document.getElementById('floorplan');
+    const ctx = canvas.getContext('2d');
+    const fileInput = document.getElementById('fileInput');
+    const floorPrefixInput = document.getElementById('floorPrefix');
+    const pxPerMeterInput = document.getElementById('pxPerMeter');
+    const pathTemplateInput = document.getElementById('pathTemplateInput');
+    const zoneSelect = document.getElementById('zoneSelect');
+    const newZoneInput = document.getElementById('newZoneInput');
+    const nodeTypeSelect = document.getElementById('nodeTypeSelect');
+    const inspectorContent = document.getElementById('inspectorContent');
+    const output = document.getElementById('output');
+    const jsonFileInput = document.getElementById('jsonFileInput');
+    const zoomSlider = document.getElementById('zoomSlider');
+    const zoomVal = document.getElementById('zoomVal');
+    const nodeSizeSlider = document.getElementById('nodeSizeSlider');
+    const nodeSizeVal = document.getElementById('nodeSizeVal');
+
+    function init() {
+      renderZoneDropdown();
+      setupDragAndDropJSON();
+      setupCanvasInteractions();
+      setupSliderControls();
+    }
+
+    function switchTab(tab) {
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.view-container').forEach(v => v.classList.remove('active'));
+
+      if (tab === 'editor') {
+        document.querySelectorAll('.tab-btn')[0].classList.add('active');
+        document.getElementById('view-editor').classList.add('active');
+        redraw();
+      } else {
+        document.querySelectorAll('.tab-btn')[1].classList.add('active');
+        document.getElementById('view-renamer').classList.add('active');
+        renderAssetRenamerGrid();
+      }
+    }
+
+    function setupSliderControls() {
+      zoomSlider.addEventListener('input', (e) => {
+        displayZoom = parseFloat(e.target.value) / 100;
+        zoomVal.innerText = `${e.target.value}%`;
+        applyCanvasDisplayZoom();
+      });
+
+      nodeSizeSlider.addEventListener('input', (e) => {
+        userMarkerScaleMultiplier = parseFloat(e.target.value) / 100;
+        nodeSizeVal.innerText = `${e.target.value}%`;
+        redraw();
+      });
+    }
+
+    function resetNodeSizeScale() {
+      nodeSizeSlider.value = 100;
+      userMarkerScaleMultiplier = 1.0;
+      nodeSizeVal.innerText = '100%';
+      redraw();
+    }
+
+    function calculateAutoResolutionScale() {
+      if (!canvas.width) return 1.0;
+      // Baseline reference: 1500px width floorplan
+      return Math.max(0.4, canvas.width / 1500);
+    }
+
+    function getEffectiveMarkerScale() {
+      return autoResolutionScale * userMarkerScaleMultiplier;
+    }
+
+    function applyCanvasDisplayZoom() {
+      if (!img.src || !canvas.width) return;
+      canvas.style.width = `${Math.round(canvas.width * displayZoom)}px`;
+      canvas.style.height = `${Math.round(canvas.height * displayZoom)}px`;
+    }
+
+    function fitImageToScreen() {
+      if (!img.src || !canvas.width) return;
+      const container = document.getElementById('canvas-container');
+      const availWidth = container.clientWidth - 40;
+      const availHeight = container.clientHeight - 40;
+
+      const scaleX = availWidth / canvas.width;
+      const scaleY = availHeight / canvas.height;
+      const fitScale = Math.min(scaleX, scaleY, 1.0);
+
+      const zoomPercent = Math.max(10, Math.round(fitScale * 100));
+      zoomSlider.value = zoomPercent;
+      displayZoom = zoomPercent / 100;
+      zoomVal.innerText = `${zoomPercent}%`;
+      applyCanvasDisplayZoom();
+    }
+
+    function getRawCanvasCoords(e) {
+      const rect = canvas.getBoundingClientRect();
+      const scaleX = canvas.width / rect.width;
+      const scaleY = canvas.height / rect.height;
+
+      return {
+        pxX: (e.clientX - rect.left) * scaleX,
+        pxY: (e.clientY - rect.top) * scaleY
+      };
+    }
+
+    function renderZoneDropdown() {
+      zoneSelect.innerHTML = zones.map(z => `<option value="${z}">${z}</option>`).join('');
+    }
+
+    function addNewZone() {
+      const newZone = newZoneInput.value.trim().toLowerCase().replace(/\s+/g, '_');
+      if (newZone && !zones.includes(newZone)) {
+        zones.push(newZone);
+        renderZoneDropdown();
+        zoneSelect.value = newZone;
+        newZoneInput.value = '';
+      }
+    }
+
+    fileInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (evt) => {
+        img.onload = () => {
+          canvas.width = img.width;
+          canvas.height = img.height;
+          autoResolutionScale = calculateAutoResolutionScale();
+          fitImageToScreen();
+          recalculatePixelsFromMeters();
+          redraw();
+        };
+        img.src = evt.target.result;
+      };
+      reader.readAsDataURL(file);
+    });
+
+    function setupCanvasInteractions() {
+      canvas.addEventListener('mousedown', (e) => {
+        if (!img.src) return;
+        const { pxX, pxY } = getRawCanvasCoords(e);
+        const markerScale = getEffectiveMarkerScale();
+
+        const hitRadius = Math.max(10, 12 * markerScale);
+        const dialLength = 35 * markerScale;
+
+        // 1. Check Heading Compass Dial Handle
+        if (selectedIndex >= 0 && selectedIndex < nodes.length) {
+          const selNode = nodes[selectedIndex];
+          const rad = (selNode.heading || 0) * (Math.PI / 180);
+          const handleX = selNode.pxX + Math.sin(rad) * dialLength;
+          const handleY = selNode.pxY - Math.cos(rad) * dialLength;
+
+          if (Math.hypot(handleX - pxX, handleY - pxY) <= Math.max(12, 12 * markerScale)) {
+            isDraggingHeading = true;
+            return;
+          }
+        }
+
+        const clickedIndex = nodes.findIndex(n => Math.hypot(n.pxX - pxX, n.pxY - pxY) <= hitRadius);
+
+        // 2. Shift + Drag to Connect Nodes
+        if (e.shiftKey && clickedIndex !== -1 && !isBoxSelecting) {
+          isConnecting = true;
+          connectStartNode = nodes[clickedIndex];
+          dragCurrentMouse = { x: pxX, y: pxY };
+          return;
+        }
+
+        // 3. Clicked an existing Node Marker
+        if (clickedIndex !== -1) {
+          if (e.shiftKey) {
+            if (selectedIndices.has(clickedIndex)) {
+              selectedIndices.delete(clickedIndex);
+            } else {
+              selectedIndices.add(clickedIndex);
+            }
+          } else {
+            if (!selectedIndices.has(clickedIndex)) {
+              selectedIndices.clear();
+              selectedIndices.add(clickedIndex);
+            }
+          }
+
+          selectedIndex = clickedIndex;
+          isDraggingNode = true;
+          dragStartPos = { x: pxX, y: pxY };
+          nodeDragOrigins = Array.from(selectedIndices).map(idx => ({
+            idx,
+            origPxX: nodes[idx].pxX,
+            origPxY: nodes[idx].pxY
+          }));
+
+          renderInspector();
+          redraw();
+          return;
+        }
+
+        // 4. Clicked on Empty Canvas Space -> Start Marquee Box Selection
+        if (!e.shiftKey) {
+          selectedIndices.clear();
+          selectedIndex = -1;
+        }
+
+        isBoxSelecting = true;
+        boxStartPos = { x: pxX, y: pxY };
+        boxCurrentPos = { x: pxX, y: pxY };
+        renderInspector();
+        redraw();
+      });
+
+      canvas.addEventListener('mousemove', (e) => {
+        if (!img.src) return;
+        const { pxX, pxY } = getRawCanvasCoords(e);
+
+        // A. Heading Drag
+        if (isDraggingHeading && selectedIndex >= 0) {
+          const selNode = nodes[selectedIndex];
+          const dx = pxX - selNode.pxX;
+          const dy = pxY - selNode.pxY;
+          let angleDeg = Math.round(Math.atan2(dx, -dy) * (180 / Math.PI));
+          if (angleDeg < 0) angleDeg += 360;
+
+          selNode.heading = angleDeg;
+          if (document.getElementById('editHeading')) {
+            document.getElementById('editHeading').value = angleDeg;
+          }
+          updateOutput();
+          redraw();
+          return;
+        }
+
+        // B. Node Dragging (Single or Group)
+        if (isDraggingNode && nodeDragOrigins.length > 0) {
+          const deltaX = pxX - dragStartPos.x;
+          const deltaY = pxY - dragStartPos.y;
+          const scale = parseFloat(pxPerMeterInput.value) || 50;
+
+          alignmentGuides = [];
+          let moveX = deltaX, moveY = deltaY;
+          const primaryOrigin = nodeDragOrigins.find(item => item.idx === selectedIndex) || nodeDragOrigins[0];
+          if (primaryOrigin) {
+            let proposedX = primaryOrigin.origPxX + moveX;
+            let proposedY = primaryOrigin.origPxY + moveY;
+            if (document.getElementById('smartAlignToggle').checked) {
+              const tolerance = Math.max(1, parseFloat(document.getElementById('alignToleranceInput').value) || 8);
+              let bestX = null, bestY = null;
+              nodes.forEach((other, otherIdx) => {
+                if (selectedIndices.has(otherIdx)) return;
+                const dx = Math.abs(other.pxX - proposedX), dy = Math.abs(other.pxY - proposedY);
+                if (dx <= tolerance && (!bestX || dx < bestX.distance)) bestX = {value: other.pxX, distance: dx};
+                if (dy <= tolerance && (!bestY || dy < bestY.distance)) bestY = {value: other.pxY, distance: dy};
+              });
+              if (bestX) { moveX += bestX.value - proposedX; alignmentGuides.push({axis:'x', value:bestX.value}); }
+              if (bestY) { moveY += bestY.value - proposedY; alignmentGuides.push({axis:'y', value:bestY.value}); }
+            }
+            if (document.getElementById('gridSnapToggle').checked) {
+              const grid = Math.max(2, parseFloat(document.getElementById('gridSizeInput').value) || 20);
+              const snapX = Math.round((primaryOrigin.origPxX + moveX) / grid) * grid;
+              const snapY = Math.round((primaryOrigin.origPxY + moveY) / grid) * grid;
+              moveX += snapX - (primaryOrigin.origPxX + moveX);
+              moveY += snapY - (primaryOrigin.origPxY + moveY);
+            }
+          }
+          nodeDragOrigins.forEach(item => {
+            const node = nodes[item.idx];
+            node.pxX = Math.round(item.origPxX + moveX);
+            node.pxY = Math.round(item.origPxY + moveY);
+            // Sync meter coordinates back from pixel placement; heading remains unchanged.
+            node.x = Math.round((node.pxX / scale) * 100) / 100;
+            node.y = Math.round(((canvas.height - node.pxY) / scale) * 100) / 100;
+          });
+
+          updateOutput();
+          if (selectedIndex >= 0) renderInspector();
+          redraw();
+          return;
+        }
+
+        // C. Connecting Line Drag
+        if (isConnecting) {
+          dragCurrentMouse = { x: pxX, y: pxY };
+          redraw();
+          return;
+        }
+
+        // D. Box Marquee Drag
+        if (isBoxSelecting) {
+          boxCurrentPos = { x: pxX, y: pxY };
+          redraw();
+          return;
+        }
+      });
+
+      canvas.addEventListener('mouseup', (e) => {
+        const { pxX, pxY } = getRawCanvasCoords(e);
+        const markerScale = getEffectiveMarkerScale();
+        const hitRadius = Math.max(10, 12 * markerScale);
+
+        if (isDraggingHeading) isDraggingHeading = false;
+        if (isDraggingNode) { isDraggingNode = false; alignmentGuides = []; }
+
+        // Finalize Shift Drag Connection Line
+        if (isConnecting) {
+          const targetIndex = nodes.findIndex(n => Math.hypot(n.pxX - pxX, n.pxY - pxY) <= hitRadius);
+          if (targetIndex !== -1 && nodes[targetIndex] !== connectStartNode) {
+            toggleNodeConnection(connectStartNode, nodes[targetIndex]);
+          }
+          isConnecting = false;
+          connectStartNode = null;
+          redraw();
+          return;
+        }
+
+        // Finalize Box Selection or Place New Node
+        if (isBoxSelecting) {
+          isBoxSelecting = false;
+          const xMin = Math.min(boxStartPos.x, boxCurrentPos.x);
+          const xMax = Math.max(boxStartPos.x, boxCurrentPos.x);
+          const yMin = Math.min(boxStartPos.y, boxCurrentPos.y);
+          const yMax = Math.max(boxStartPos.y, boxCurrentPos.y);
+
+          const dragDist = Math.hypot(boxCurrentPos.x - boxStartPos.x, boxCurrentPos.y - boxStartPos.y);
+
+          if (dragDist > 10) {
+            nodes.forEach((n, idx) => {
+              if (n.pxX >= xMin && n.pxX <= xMax && n.pxY >= yMin && n.pxY <= yMax) {
+                selectedIndices.add(idx);
+              }
+            });
+            if (selectedIndices.size > 0) {
+              selectedIndex = Array.from(selectedIndices)[0];
+            }
+          } else {
+            const scale = parseFloat(pxPerMeterInput.value) || 50;
+            const floor = floorPrefixInput.value.trim().toLowerCase() || 'f1';
+            const zone = zoneSelect.value;
+            const nodeType = nodeTypeSelect.value;
+
+            let placeX = pxX, placeY = pxY;
+            if (document.getElementById('gridSnapToggle').checked) {
+              const grid = Math.max(2, parseFloat(document.getElementById('gridSizeInput').value) || 20);
+              placeX = Math.round(placeX / grid) * grid;
+              placeY = Math.round(placeY / grid) * grid;
+            }
+            const meterX = Math.round((placeX / scale) * 100) / 100;
+            const meterY = Math.round(((canvas.height - placeY) / scale) * 100) / 100;
+
+            const nodeIndex = nodes.length + 1;
+            const nodeNum = nodeIndex.toString().padStart(3, '0');
+            const nodeId = `${floor}_node_${nodeNum}`;
+
+            const panoramaPath = pathTemplateInput.value
+              .replace('{floor}', floor)
+              .replace('{num}', nodeNum)
+              .replace('{id}', nodeId);
+
+            const node = {
+              id: nodeId,
+              floor: floor,
+              zone: zone,
+              type: nodeType,
+              title: `${floor.toUpperCase()} Node ${nodeIndex} (${nodeType})`,
+              x: meterX,
+              y: meterY,
+              heading: 0,
+              panorama: panoramaPath,
+              targetNodes: [],
+              targetFloor: null,
+              targetNodeId: null,
+              pxX: placeX, pxY: placeY
+            };
+
+            nodes.push(node);
+            selectedIndex = nodes.length - 1;
+            selectedIndices.clear();
+            selectedIndices.add(selectedIndex);
+          }
+
+          renderInspector();
+          updateOutput();
+          redraw();
+        }
+      });
+    }
+
+    function toggleNodeConnection(nodeA, nodeB) {
+      if (!Array.isArray(nodeA.targetNodes)) nodeA.targetNodes = [];
+      if (!Array.isArray(nodeB.targetNodes)) nodeB.targetNodes = [];
+
+      const idxA = nodeA.targetNodes.indexOf(nodeB.id);
+      if (idxA > -1) {
+        nodeA.targetNodes.splice(idxA, 1);
+      } else {
+        nodeA.targetNodes.push(nodeB.id);
+      }
+
+      const idxB = nodeB.targetNodes.indexOf(nodeA.id);
+      if (idxB > -1) {
+        nodeB.targetNodes.splice(idxB, 1);
+      } else {
+        nodeB.targetNodes.push(nodeA.id);
+      }
+
+      updateOutput();
+      renderInspector();
+    }
+
+    function redraw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      if (img.src) ctx.drawImage(img, 0, 0);
+
+      const markerScale = getEffectiveMarkerScale();
+      const nodeRadius = Math.max(4, 7 * markerScale);
+      const selRadius = Math.max(6, 10 * markerScale);
+      const lineWidth = Math.max(1, 3 * markerScale);
+      const dialLength = 35 * markerScale;
+      const fontSize = Math.max(9, Math.round(11 * markerScale));
+
+      // 1. Draw Manual Path Lines
+      const drawnPairs = new Set();
+      nodes.forEach(n => {
+        const targets = Array.isArray(n.targetNodes) ? n.targetNodes : (n.targetNodeId ? [n.targetNodeId] : []);
+        targets.forEach(targetId => {
+          const pairKey = [n.id, targetId].sort().join('--');
+          if (!drawnPairs.has(pairKey)) {
+            drawnPairs.add(pairKey);
+            const targetNode = nodes.find(m => m.id === targetId);
+            if (targetNode) {
+              ctx.beginPath();
+              ctx.lineWidth = lineWidth;
+              ctx.strokeStyle = '#00ff66';
+              ctx.moveTo(n.pxX, n.pxY);
+              ctx.lineTo(targetNode.pxX, targetNode.pxY);
+              ctx.stroke();
+            }
+          }
+        });
+      });
+
+      // 2. Draw Shift Drag Connection Line
+      if (isConnecting && connectStartNode) {
+        ctx.beginPath();
+        ctx.lineWidth = Math.max(1, 2 * markerScale);
+        ctx.setLineDash([6 * markerScale, 6 * markerScale]);
+        ctx.strokeStyle = '#00aaff';
+        ctx.moveTo(connectStartNode.pxX, connectStartNode.pxY);
+        ctx.lineTo(dragCurrentMouse.x, dragCurrentMouse.y);
+        ctx.stroke();
+        ctx.setLineDash([]);
+      }
+
+      // 3. Draw Box Selection Marquee
+      if (isBoxSelecting) {
+        const width = boxCurrentPos.x - boxStartPos.x;
+        const height = boxCurrentPos.y - boxStartPos.y;
+        ctx.fillStyle = 'rgba(0, 170, 255, 0.15)';
+        ctx.fillRect(boxStartPos.x, boxStartPos.y, width, height);
+        ctx.strokeStyle = '#00aaff';
+        ctx.lineWidth = Math.max(1, 1.5 * markerScale);
+        ctx.setLineDash([4 * markerScale, 4 * markerScale]);
+        ctx.strokeRect(boxStartPos.x, boxStartPos.y, width, height);
+        ctx.setLineDash([]);
+      }
+
+      // 4. Draw temporary Smart Align guides while dragging.
+      if (alignmentGuides.length) {
+        ctx.save();
+        ctx.strokeStyle = 'rgba(255, 210, 60, 0.9)';
+        ctx.lineWidth = Math.max(1, 1.25 * markerScale);
+        ctx.setLineDash([5 * markerScale, 4 * markerScale]);
+        alignmentGuides.forEach(g => {
+          ctx.beginPath();
+          if (g.axis === 'x') { ctx.moveTo(g.value, 0); ctx.lineTo(g.value, canvas.height); }
+          else { ctx.moveTo(0, g.value); ctx.lineTo(canvas.width, g.value); }
+          ctx.stroke();
+        });
+        ctx.restore();
+      }
+
+      // 5. Draw Node Markers & Heading Compass Handles
+      nodes.forEach((n, i) => {
+        const isSelected = selectedIndices.has(i) || (i === selectedIndex);
+
+        // Heading Vector Dial Line
+        const headingDeg = n.heading || 0;
+        const rad = headingDeg * (Math.PI / 180);
+        const handleX = n.pxX + Math.sin(rad) * dialLength;
+        const handleY = n.pxY - Math.cos(rad) * dialLength;
+
+        ctx.beginPath();
+        ctx.lineWidth = Math.max(1, 2 * markerScale);
+        ctx.strokeStyle = isSelected ? '#00e5ff' : 'rgba(0, 170, 255, 0.5)';
+        ctx.moveTo(n.pxX, n.pxY);
+        ctx.lineTo(handleX, handleY);
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.arc(handleX, handleY, isSelected ? (5 * markerScale) : (3 * markerScale), 0, 2 * Math.PI);
+        ctx.fillStyle = '#00aaff';
+        ctx.fill();
+
+        // Node Circle Marker
+        ctx.beginPath();
+        ctx.arc(n.pxX, n.pxY, isSelected ? selRadius : nodeRadius, 0, 2 * Math.PI);
+        ctx.fillStyle = typeColors[n.type] || '#ff0055';
+        ctx.fill();
+        ctx.lineWidth = isSelected ? Math.max(2, 3 * markerScale) : Math.max(1, 2 * markerScale);
+        ctx.strokeStyle = isSelected ? '#00e5ff' : '#ffffff';
+        ctx.stroke();
+
+        // Node number labels
+        ctx.fillStyle = '#ffffff';
+        ctx.font = `bold ${fontSize}px sans-serif`;
+        ctx.fillText(`${i + 1}`, n.pxX + (12 * markerScale), n.pxY + (4 * markerScale));
+      });
+    }
+
+    function recalculatePixelsFromMeters() {
+      if (!canvas.height) return;
+      const scale = parseFloat(pxPerMeterInput.value) || 50;
+      nodes.forEach(n => {
+        n.pxX = Math.round(n.x * scale);
+        n.pxY = Math.round(canvas.height - (n.y * scale));
+      });
+    }
+
+    function renderInspector() {
+      if (selectedIndices.size > 1) {
+        inspectorContent.innerHTML = `
+          <div style="display:flex; flex-direction:column; gap:8px;">
+            <div style="color:#00aaff; font-weight:bold;">Group Selection Active</div>
+            <div style="font-size:11px; color:#aaa;">Selected <strong>${selectedIndices.size}</strong> nodes.</div>
+            
+            <label>Bulk Assign Zone:</label>
+            <select id="bulkZoneSelect">
+              <option value="">-- Choose Zone --</option>
+              ${zones.map(z => `<option value="${z}">${z}</option>`).join('')}
+            </select>
+            <button class="secondary" onclick="applyBulkZone()">Apply Zone to Selected Group</button>
+
+            <div class="row" style="margin-top:8px;">
+              <button onclick="deleteSelectedGroup()" class="danger">Delete All Selected (${selectedIndices.size})</button>
+            </div>
+          </div>
+        `;
+        return;
+      }
+
+      if (selectedIndex < 0 || selectedIndex >= nodes.length) {
+        inspectorContent.innerHTML = 'No node selected. Click any canvas marker to inspect or modify properties.';
+        return;
+      }
+
+      const n = nodes[selectedIndex];
+
+      if (!zones.includes(n.zone)) {
+        zones.push(n.zone);
+        renderZoneDropdown();
+      }
+
+      const connectedList = Array.isArray(n.targetNodes) ? n.targetNodes.join(', ') : (n.targetNodeId || 'None');
+
+      inspectorContent.innerHTML = `
+        <div style="display:flex; flex-direction:column; gap:8px;">
+          <div><strong>ID:</strong> <span style="color:#00aaff;">${n.id}</span> (X: ${n.x}m, Y: ${n.y}m)</div>
+          
+          <label>Title / Descriptor:</label>
+          <input type="text" id="editTitle" value="${n.title}">
+
+          <div class="row">
+            <div>
+              <label>Camera Heading (° Offset):</label>
+              <input type="number" id="editHeading" value="${n.heading || 0}" min="0" max="360">
+            </div>
+            <div>
+              <label>Zone ID:</label>
+              <select id="editZone">
+                ${zones.map(z => `<option value="${z}" ${z === n.zone ? 'selected' : ''}>${z}</option>`).join('')}
+              </select>
+            </div>
+          </div>
+
+          <label>Node Type:</label>
+          <select id="editType">
+            <option value="standard" ${n.type === 'standard' ? 'selected' : ''}>Standard Path</option>
+            <option value="door" ${n.type === 'door' ? 'selected' : ''}>Doorway / Gateway</option>
+            <option value="stair" ${n.type === 'stair' ? 'selected' : ''}>Stairs</option>
+            <option value="pwd" ${n.type === 'pwd' ? 'selected' : ''}>PWD / Accessible</option>
+            <option value="fire_exit" ${n.type === 'fire_exit' ? 'selected' : ''}>Fire Exit</option>
+            <option value="fire_extinguisher" ${n.type === 'fire_extinguisher' ? 'selected' : ''}>Fire Extinguisher</option>
+          </select>
+
+          <div id="floorTransitionGroup" style="display: ${n.type === 'stair' || n.type === 'pwd' ? 'flex' : 'none'}; flex-direction: column; gap: 6px; border-left: 3px solid #00aaff; padding-left: 8px; margin: 4px 0;">
+            <label style="color:#00aaff; font-weight:bold;">Paired Cross-Floor Transition</label>
+            <label>Destination node (select to auto-fill floor and ID)</label>
+            <select id="editDestinationNode" class="transition-select">
+              <option value="">-- Select destination node --</option>
+              ${nodes.filter(m => m.id !== n.id && String(m.floor) !== String(n.floor)).map(m => `<option value="${m.id}" ${m.id === n.targetNodeId ? 'selected' : ''}>${m.floor} · ${m.id} · ${m.title || m.type || 'node'}</option>`).join('')}
+            </select>
+            <div class="row">
+              <div>
+                <label>Target Floor ID:</label>
+                <input type="text" id="editTargetFloor" value="${n.targetFloor || ''}" placeholder="e.g. f2">
+              </div>
+              <div>
+                <label>Target Node ID:</label>
+                <input type="text" id="editTargetNodeId" value="${n.targetNodeId || ''}" placeholder="e.g. f2_stair_01">
+              </div>
+            </div>
+          </div>
+
+          <div style="font-size:11px; color:#aaa; background:#121212; padding:6px; border-radius:4px;">
+            <strong>Linked Connections:</strong> <span style="color:#00ff66;">${connectedList || 'None (Hold Shift + Drag on map to link)'}</span>
+          </div>
+
+          <label>Panorama File Path:</label>
+          <input type="text" id="editPanorama" value="${n.panorama}">
+
+          <img id="inspectorThumb" class="thumb-preview" alt="Preview">
+
+          <div class="row" style="margin-top:4px;">
+            <button onclick="saveNodeEdits()" class="success">Save Changes</button>
+            <button onclick="deleteSelectedNode()" class="danger">Delete Node</button>
+          </div>
+        </div>
+      `;
+
+      setTimeout(() => {
+        const editTypeEl = document.getElementById('editType');
+        if (editTypeEl) {
+          editTypeEl.addEventListener('change', (e) => {
+            const group = document.getElementById('floorTransitionGroup');
+            if (group) group.style.display = (e.target.value === 'stair' || e.target.value === 'pwd') ? 'flex' : 'none';
+          });
+        }
+        const destinationSelect = document.getElementById('editDestinationNode');
+        if (destinationSelect) {
+          destinationSelect.addEventListener('change', (e) => {
+            const dest = nodes.find(m => m.id === e.target.value);
+            const floorField = document.getElementById('editTargetFloor');
+            const idField = document.getElementById('editTargetNodeId');
+            if (dest && floorField && idField) { floorField.value = dest.floor || ''; idField.value = dest.id; }
+          });
+        }
+      }, 0);
+
+      if (mappedFiles[n.id]) {
+        const thumb = document.getElementById('inspectorThumb');
+        thumb.src = URL.createObjectURL(mappedFiles[n.id]);
+        thumb.style.display = 'block';
+      }
+    }
+
+    function applyBulkZone() {
+      const zVal = document.getElementById('bulkZoneSelect').value;
+      if (!zVal) return;
+      selectedIndices.forEach(idx => {
+        nodes[idx].zone = zVal;
+      });
+      updateOutput();
+      alert(`Updated zone to "${zVal}" for ${selectedIndices.size} selected nodes.`);
+    }
+
+    function deleteSelectedGroup() {
+      if (!confirm(`Delete all ${selectedIndices.size} selected nodes?`)) return;
+
+      const indicesToDelete = Array.from(selectedIndices).sort((a, b) => b - a);
+      const deletedIds = indicesToDelete.map(i => nodes[i].id);
+
+      indicesToDelete.forEach(i => nodes.splice(i, 1));
+
+      nodes.forEach(n => {
+        if (Array.isArray(n.targetNodes)) {
+          n.targetNodes = n.targetNodes.filter(id => !deletedIds.includes(id));
+        }
+      });
+
+      selectedIndices.clear();
+      selectedIndex = -1;
+      renderInspector();
+      updateOutput();
+      redraw();
+    }
+
+    function saveNodeEdits() {
+      if (selectedIndex < 0) return;
+      const n = nodes[selectedIndex];
+      n.title = document.getElementById('editTitle').value.trim();
+      n.zone = document.getElementById('editZone').value;
+      n.type = document.getElementById('editType').value;
+      n.panorama = document.getElementById('editPanorama').value.trim();
+      n.heading = parseInt(document.getElementById('editHeading').value) || 0;
+
+      if (n.type === 'stair' || n.type === 'pwd') {
+        const targetFloorField = document.getElementById('editTargetFloor');
+        const targetNodeField = document.getElementById('editTargetNodeId');
+        n.targetFloor = targetFloorField ? (targetFloorField.value.trim() || null) : (n.targetFloor ?? null);
+        n.targetNodeId = targetNodeField ? (targetNodeField.value.trim() || null) : (n.targetNodeId ?? null);
+        const destination = nodes.find(m => m.id === n.targetNodeId);
+        if (destination && destination.id !== n.id) {
+          n.targetFloor = destination.floor || n.targetFloor;
+          if (!Array.isArray(destination.targetNodes)) destination.targetNodes = [];
+          if (!destination.targetNodes.includes(n.id)) destination.targetNodes.push(n.id);
+          destination.targetFloor = n.floor || null;
+          destination.targetNodeId = n.id;
+        } else if (n.targetNodeId && !destination) {
+          alert(`Target node "${n.targetNodeId}" is not loaded. The manual target fields were preserved for validation.`);
+        }
+      }
+
+      updateOutput();
+      redraw();
+      alert(`Node ${n.id} updated!`);
+    }
+
+    function deleteSelectedNode() {
+      if (selectedIndex < 0) return;
+      const deletedId = nodes[selectedIndex].id;
+      nodes.splice(selectedIndex, 1);
+
+      nodes.forEach(n => {
+        if (Array.isArray(n.targetNodes)) {
+          n.targetNodes = n.targetNodes.filter(id => id !== deletedId);
+        }
+      });
+
+      selectedIndices.clear();
+      selectedIndex = -1;
+      renderInspector();
+      updateOutput();
+      redraw();
+    }
+
+    function validateNodeData() {
+      const report = document.getElementById('validationReport');
+      const errors = [], warnings = [], notes = [];
+      const idMap = new Map();
+      const knownTypes = new Set(['standard','door','stair','pwd','fire_exit','fire_extinguisher']);
+      const floors = new Set(nodes.map(n => String(n.floor ?? '')).filter(Boolean));
+      const typeCounts = {};
+      if (!Array.isArray(nodes)) {
+        report.style.display = 'block'; report.textContent = 'ERROR: Node data is not an array.'; return;
+      }
+      if (!nodes.length) warnings.push('No nodes loaded; import or create node data first.');
+      nodes.forEach((n, i) => {
+        const tag = `Row ${i + 1}${n && n.id ? ` [${n.id}]` : ''}`;
+        if (!n || typeof n !== 'object' || Array.isArray(n)) { errors.push(`${tag}: node must be an object.`); return; }
+        if (n.id == null || String(n.id).trim() === '') errors.push(`${tag}: missing required id.`);
+        else {
+          const id = String(n.id);
+          if (idMap.has(id)) errors.push(`${tag}: duplicate id also used at row ${idMap.get(id) + 1}.`);
+          else idMap.set(id, i);
+        }
+        if (n.floor == null || String(n.floor).trim() === '') errors.push(`${tag}: missing floor.`);
+        if (n.zone == null || String(n.zone).trim() === '') warnings.push(`${tag}: zone is empty.`);
+        if (n.type == null || String(n.type).trim() === '') errors.push(`${tag}: missing type.`);
+        else {
+          typeCounts[n.type] = (typeCounts[n.type] || 0) + 1;
+          if (!knownTypes.has(n.type)) warnings.push(`${tag}: unrecognized type "${n.type}"; preserve and review frontend support.`);
+        }
+        ['x','y'].forEach(k => { if (typeof n[k] !== 'number' || !Number.isFinite(n[k])) errors.push(`${tag}: ${k} must be a finite number.`); });
+        if (n.heading != null && (typeof n.heading !== 'number' || !Number.isFinite(n.heading))) warnings.push(`${tag}: heading is not numeric.`);
+        if (n.panorama == null || String(n.panorama).trim() === '') warnings.push(`${tag}: panorama path is empty.`);
+        if (n.targetNodes != null && !Array.isArray(n.targetNodes)) errors.push(`${tag}: targetNodes must be an array when present.`);
+      });
+      nodes.forEach((n, i) => {
+        if (!n || typeof n !== 'object') return;
+        const tag = `Row ${i + 1} [${n.id ?? 'missing id'}]`;
+        if (Array.isArray(n.targetNodes)) n.targetNodes.forEach(id => {
+          if (!idMap.has(String(id))) errors.push(`${tag}: targetNodes references missing node "${id}".`);
+        });
+        if (n.targetNodeId != null && String(n.targetNodeId).trim()) {
+          const dest = nodes.find(m => m && String(m.id) === String(n.targetNodeId));
+          if (!dest) warnings.push(`${tag}: targetNodeId "${n.targetNodeId}" is not in the loaded node set (may be a cross-file reference).`);
+          else {
+            if (n.targetFloor != null && String(n.targetFloor) !== String(dest.floor)) errors.push(`${tag}: targetFloor "${n.targetFloor}" does not match destination floor "${dest.floor}".`);
+            if (String(n.floor) === String(dest.floor)) warnings.push(`${tag}: transition target is on the same floor; confirm this is intentional.`);
+            if (dest.targetNodeId != null && String(dest.targetNodeId) !== String(n.id)) warnings.push(`${tag}: destination "${dest.id}" does not point back to this node.`);
+          }
+        } else if (n.targetFloor != null && String(n.targetFloor).trim()) {
+          warnings.push(`${tag}: targetFloor is set but targetNodeId is empty.`);
+        }
+        if ((n.type === 'stair' || n.type === 'pwd') && (!n.targetFloor || !n.targetNodeId)) warnings.push(`${tag}: ${n.type} node has no complete cross-floor destination.`);
+      });
+      notes.push(`Nodes checked: ${nodes.length}`);
+      notes.push(`Floors found: ${floors.size ? Array.from(floors).sort().join(', ') : '(none)'}`);
+      notes.push(`Node types: ${Object.keys(typeCounts).length ? Object.entries(typeCounts).sort((a,b)=>a[0].localeCompare(b[0])).map(([t,c])=>`${t}=${c}`).join(', ') : '(none)'}`);
+      notes.push('');
+      notes.push(`ERRORS (${errors.length})`);
+      notes.push(...(errors.length ? errors.map(x => `• ${x}`) : ['• None']));
+      notes.push('');
+      notes.push(`WARNINGS (${warnings.length})`);
+      notes.push(...(warnings.length ? warnings.map(x => `• ${x}`) : ['• None']));
+      notes.push('');
+      notes.push('Read-only check complete. No node records were changed.');
+      report.style.display = 'block';
+      report.className = 'validation-report';
+      report.textContent = notes.join('\n');
+      report.style.borderColor = errors.length ? '#ff6b6b' : warnings.length ? '#ffcc66' : '#00ff66';
+    }
+
+    function applyBulkPathRemap() {
+      const template = pathTemplateInput.value;
+      nodes.forEach((n, idx) => {
+        const num = (idx + 1).toString().padStart(3, '0');
+        n.panorama = template
+          .replace('{floor}', n.floor)
+          .replace('{num}', num)
+          .replace('{id}', n.id);
+      });
+      updateOutput();
+      if (selectedIndex >= 0) renderInspector();
+      redraw();
+      alert(`Successfully updated image paths for all ${nodes.length} nodes!`);
+    }
+
+    function updateOutput() {
+      const exportableNodes = nodes.map(({ pxX, pxY, ...rest }) => rest);
+      output.value = JSON.stringify(exportableNodes, null, 2);
+    }
+
+    function loadJSONData(jsonText) {
+      try {
+        const parsed = JSON.parse(jsonText);
+        if (!Array.isArray(parsed)) {
+          alert("Invalid JSON structure. Expected an array of nodes.");
+          return;
+        }
+        nodes = parsed;
+        recalculatePixelsFromMeters();
+        selectedIndices.clear();
+        selectedIndex = -1;
+        renderInspector();
+        redraw();
+        updateOutput();
+        alert(`Successfully imported ${nodes.length} nodes!`);
+      } catch (err) {
+        alert("Invalid JSON format. Please check the file contents.");
+      }
+    }
+
+    function importJSON() {
+      const textContent = output.value.trim();
+      if (textContent.length > 0) {
+        loadJSONData(textContent);
+      } else {
+        jsonFileInput.click();
+      }
+    }
+
+    jsonFileInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (evt) => loadJSONData(evt.target.result);
+      reader.readAsText(file);
+      e.target.value = "";
+    });
+
+    function setupDragAndDropJSON() {
+      output.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        output.style.borderColor = "#007acc";
+      });
+
+      output.addEventListener('dragleave', () => {
+        output.style.borderColor = "";
+      });
+
+      output.addEventListener('drop', (e) => {
+        e.preventDefault();
+        output.style.borderColor = "";
+
+        const files = e.dataTransfer.files;
+        if (files.length === 0) return;
+
+        const file = files[0];
+        if (file.type !== "application/json" && !file.name.endsWith(".json")) {
+          alert("Please drop a valid .json file.");
+          return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = (evt) => loadJSONData(evt.target.result);
+        reader.readAsText(file);
+      });
+    }
+
+    function downloadJSON() {
+      updateOutput();
+      const blob = new Blob([output.value], { type: 'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `${floorPrefixInput.value || 'floor'}_nodes.json`;
+      a.click();
+    }
+
+    function copyJSON() {
+      updateOutput();
+      navigator.clipboard.writeText(output.value);
+      alert('Copied nodes.json content to clipboard!');
+    }
+
+    function clearAllNodes() {
+      if (confirm("Are you sure you want to clear all nodes?")) {
+        nodes = [];
+        selectedIndices.clear();
+        selectedIndex = -1;
+        renderInspector();
+        updateOutput();
+        redraw();
+      }
+    }
+
+    function getTargetFilename(node) {
+      const parts = node.panorama.split('/');
+      return parts[parts.length - 1] || `${node.id}.jpg`;
+    }
+
+    function renderAssetRenamerGrid() {
+      const grid = document.getElementById('assetGrid');
+      if (nodes.length === 0) {
+        grid.innerHTML = `<div style="color:#666; font-size:13px; text-align:center; padding:40px;">No nodes loaded. Add nodes on Tab 1 or import a nodes.json file first.</div>`;
+        return;
+      }
+
+      grid.innerHTML = nodes.map((node, i) => {
+        const expectedFilename = getTargetFilename(node);
+        const hasFile = mappedFiles[node.id];
+        const previewUrl = hasFile ? URL.createObjectURL(hasFile) : '';
+
+        return `
+          <div class="asset-row">
+            <div class="asset-info">
+              <div class="asset-id">#${i + 1} - ${node.id} (${node.title})</div>
+              <div class="asset-path">Expected Target: ${node.panorama}</div>
+            </div>
+            
+            <div class="drop-zone ${hasFile ? 'has-file' : ''}" 
+                 onclick="triggerFileInput('${node.id}')"
+                 ondragover="handleDragOver(event)"
+                 ondragleave="handleDragLeave(event)"
+                 ondrop="handleFileDrop(event, '${node.id}')">
+              ${hasFile ? `<img src="${previewUrl}">` : ''}
+              <span>${hasFile ? `✓ Matched: ${hasFile.name}` : `Drag Raw 360 Photo Here`}</span>
+              <input type="file" id="file_input_${node.id}" accept="image/*" style="display:none" onchange="handleFileSelect(event, '${node.id}')">
+            </div>
+
+            ${hasFile ? `
+              <button class="danger" style="padding:6px 10px; height:38px; font-size:12px; margin-left:8px;" onclick="removeMappedFile('${node.id}', event)" title="Remove Photo">✕ Remove</button>
+            ` : ''}
+          </div>
+        `;
+      }).join('');
+    }
+
+    function triggerFileInput(nodeId) {
+      document.getElementById(`file_input_${nodeId}`).click();
+    }
+
+    function handleDragOver(e) { e.preventDefault(); e.currentTarget.classList.add('dragover'); }
+    function handleDragLeave(e) { e.currentTarget.classList.remove('dragover'); }
+
+    function handleFileDrop(e, nodeId) {
+      e.preventDefault();
+      e.currentTarget.classList.remove('dragover');
+      if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+        mappedFiles[nodeId] = e.dataTransfer.files[0];
+        renderAssetRenamerGrid();
+      }
+    }
+
+    function handleFileSelect(e, nodeId) {
+      if (e.target.files && e.target.files[0]) {
+        mappedFiles[nodeId] = e.target.files[0];
+        renderAssetRenamerGrid();
+      }
+    }
+
+    function removeMappedFile(nodeId, event) {
+      if (event) event.stopPropagation();
+      delete mappedFiles[nodeId];
+      renderAssetRenamerGrid();
+      if (selectedIndex >= 0 && nodes[selectedIndex] && nodes[selectedIndex].id === nodeId) {
+        renderInspector();
+      }
+    }
+
+    async function processAndCompressImage(file) {
+      const maxDim = parseInt(document.getElementById('compressRes').value) || 0;
+      const quality = parseFloat(document.getElementById('compressQuality').value) || 0.85;
+
+      if (maxDim === 0 && quality === 1.0) return file;
+
+      return new Promise((resolve) => {
+        const img = new Image();
+        const url = URL.createObjectURL(file);
+
+        img.onload = () => {
+          URL.revokeObjectURL(url);
+          let targetWidth = img.width;
+          let targetHeight = img.height;
+
+          if (maxDim > 0 && targetWidth > maxDim) {
+            targetHeight = Math.round((targetHeight * maxDim) / targetWidth);
+            targetWidth = maxDim;
+          }
+
+          const offscreenCanvas = document.createElement('canvas');
+          offscreenCanvas.width = targetWidth;
+          offscreenCanvas.height = targetHeight;
+          const ctx = offscreenCanvas.getContext('2d');
+
+          ctx.imageSmoothingEnabled = true;
+          ctx.imageSmoothingQuality = 'high';
+          ctx.drawImage(img, 0, 0, targetWidth, targetHeight);
+
+          offscreenCanvas.toBlob(
+            (blob) => resolve(blob || file),
+            'image/jpeg',
+            quality
+          );
+        };
+
+        img.onerror = () => {
+          URL.revokeObjectURL(url);
+          resolve(file);
+        };
+
+        img.src = url;
+      });
+    }
+
+    async function syncDirectToFolder() {
+      if (!window.showDirectoryPicker) {
+        alert("Direct Directory Sync is supported in Chrome, Edge, and Opera. For Safari/Firefox, use 'Download All as ZIP'.");
+        return;
+      }
+
+      const fileKeys = Object.keys(mappedFiles);
+      if (fileKeys.length === 0) {
+        alert("No 360 photos matched yet! Drag and drop raw images onto node rows first.");
+        return;
+      }
+
+      try {
+        const dirHandle = await window.showDirectoryPicker();
+        const btn = document.getElementById('btnSync');
+        const originalText = btn.innerText;
+        let count = 0;
+
+        for (let i = 0; i < nodes.length; i++) {
+          const node = nodes[i];
+          const file = mappedFiles[node.id];
+          if (file) {
+            btn.innerText = `⏳ Resizing ${count + 1}/${fileKeys.length}...`;
+            const processedBlob = await processAndCompressImage(file);
+            const targetName = getTargetFilename(node);
+            const fileHandle = await dirHandle.getFileHandle(targetName, { create: true });
+            const writable = await fileHandle.createWritable();
+            await writable.write(processedBlob);
+            await writable.close();
+            count++;
+          }
+        }
+
+        btn.innerText = originalText;
+        alert(`Success! Saved and web-optimized ${count} 360 photos directly into your local computer folder.`);
+      } catch (err) {
+        if (err.name !== 'AbortError') {
+          console.error(err);
+          alert("Error syncing to local folder: " + err.message);
+        }
+      }
+    }
+
+    async function exportAssetsZip() {
+      if (typeof JSZip === 'undefined') {
+        alert("JSZip library loading. Ensure internet connectivity to load ZIP exporter.");
+        return;
+      }
+
+      const fileKeys = Object.keys(mappedFiles);
+      if (fileKeys.length === 0) {
+        alert("No 360 photos matched yet! Drag and drop raw images onto node rows first.");
+        return;
+      }
+
+      const zip = new JSZip();
+      const btn = document.getElementById('btnZip');
+      const originalText = btn.innerText;
+      let count = 0;
+
+      for (let i = 0; i < nodes.length; i++) {
+        const node = nodes[i];
+        const file = mappedFiles[node.id];
+        if (file) {
+          btn.innerText = `⏳ Resizing ${count + 1}/${fileKeys.length}...`;
+          const processedBlob = await processAndCompressImage(file);
+          const targetName = getTargetFilename(node);
+          zip.file(targetName, processedBlob);
+          count++;
+        }
+      }
+
+      btn.innerText = "⏳ Building ZIP...";
+      const blob = await zip.generateAsync({ type: "blob" });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `${floorPrefixInput.value || 'floor'}_360_assets.zip`;
+      a.click();
+
+      btn.innerText = originalText;
+    }
+
+    init();
+    pxPerMeterInput.addEventListener('change', () => { recalculatePixelsFromMeters(); redraw(); });
+  </script>
+</body>
+</html>
