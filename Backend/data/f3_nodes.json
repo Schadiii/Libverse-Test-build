@@ -7,11 +7,10 @@
     "title": "F3 Node 1 (standard)",
     "x": 84,
     "y": 12.14,
-    "heading": 0,
+    "heading": 270,
     "panorama": "/assets/360/f3/node_001.jpg",
     "targetNodes": [
       "f3_node_002"
-
     ],
     "targetFloor": null,
     "targetNodeId": null
@@ -24,7 +23,7 @@
     "title": "F3 Node 2 (standard)",
     "x": 75.2,
     "y": 12.14,
-    "heading": 0,
+    "heading": 270,
     "panorama": "/assets/360/f3/node_002.jpg",
     "targetNodes": [
       "f3_node_001",
@@ -48,7 +47,7 @@
     "title": "F3 Node 3 (standard)",
     "x": 70.4,
     "y": 12.14,
-    "heading": 0,
+    "heading": 269,
     "panorama": "/assets/360/f3/node_003.jpg",
     "targetNodes": [
       "f3_node_002",
@@ -66,7 +65,7 @@
     "title": "F3 Node 4 (standard)",
     "x": 68,
     "y": 12.14,
-    "heading": 0,
+    "heading": 272,
     "panorama": "/assets/360/f3/node_004.jpg",
     "targetNodes": [
       "f3_node_003",
@@ -84,7 +83,7 @@
     "title": "F3 Node 5 (standard)",
     "x": 68,
     "y": 9.34,
-    "heading": 0,
+    "heading": 269,
     "panorama": "/assets/360/f3/node_005.jpg",
     "targetNodes": [
       "f3_node_004",
@@ -101,7 +100,7 @@
     "title": "F3 Node 6 (standard)",
     "x": 64,
     "y": 9.34,
-    "heading": 0,
+    "heading": 271,
     "panorama": "/assets/360/f3/node_006.jpg",
     "targetNodes": [
       "f3_node_005",
@@ -119,7 +118,7 @@
     "title": "F3 Node 7 (standard)",
     "x": 60,
     "y": 9.34,
-    "heading": 0,
+    "heading": 274,
     "panorama": "/assets/360/f3/node_007.jpg",
     "targetNodes": [
       "f3_node_006",
@@ -137,7 +136,7 @@
     "title": "F3 Node 8 (standard)",
     "x": 56.4,
     "y": 9.34,
-    "heading": 0,
+    "heading": 271,
     "panorama": "/assets/360/f3/node_008.jpg",
     "targetNodes": [
       "f3_node_007",
@@ -153,7 +152,7 @@
     "zone": "main_hall",
     "type": "standard",
     "title": "F3 Node 9 (standard)",
-    "x": 53.2,
+    "x": 53.14,
     "y": 9.34,
     "heading": 0,
     "panorama": "/assets/360/f3/node_009.jpg",
@@ -208,7 +207,7 @@
     "title": "F3 Node 12 (standard)",
     "x": 53.2,
     "y": 20.14,
-    "heading": 0,
+    "heading": 271,
     "panorama": "/assets/360/f3/node_012.jpg",
     "targetNodes": [
       "f3_node_011",
@@ -227,7 +226,7 @@
     "title": "F3 Node 13 (standard)",
     "x": 56,
     "y": 20.14,
-    "heading": 0,
+    "heading": 269,
     "panorama": "/assets/360/f3/node_013.jpg",
     "targetNodes": [
       "f3_node_012",
@@ -244,7 +243,7 @@
     "title": "F3 Node 14 (standard)",
     "x": 58.8,
     "y": 20.14,
-    "heading": 0,
+    "heading": 269,
     "panorama": "/assets/360/f3/node_014.jpg",
     "targetNodes": [
       "f3_node_013",
@@ -262,7 +261,7 @@
     "title": "F3 Node 15 (standard)",
     "x": 61.74,
     "y": 20.14,
-    "heading": 0,
+    "heading": 270,
     "panorama": "/assets/360/f3/node_015.jpg",
     "targetNodes": [
       "f3_node_014",
@@ -279,7 +278,7 @@
     "title": "F3 Node 16 (standard)",
     "x": 64.8,
     "y": 20.14,
-    "heading": 0,
+    "heading": 271,
     "panorama": "/assets/360/f3/node_016.jpg",
     "targetNodes": [
       "f3_node_021",
@@ -297,7 +296,7 @@
     "title": "F3 Node 17 (standard)",
     "x": 68,
     "y": 20.14,
-    "heading": 0,
+    "heading": 271,
     "panorama": "/assets/360/f3/node_017.jpg",
     "targetNodes": [
       "f3_node_020",
@@ -315,7 +314,7 @@
     "title": "F3 Node 18 (standard)",
     "x": 70.4,
     "y": 20.14,
-    "heading": 0,
+    "heading": 269,
     "panorama": "/assets/360/f3/node_018.jpg",
     "targetNodes": [
       "f3_node_019",
@@ -332,7 +331,7 @@
     "title": "F3 Node 19 (standard)",
     "x": 70.4,
     "y": 16.14,
-    "heading": 0,
+    "heading": 271,
     "panorama": "/assets/360/f3/node_019.jpg",
     "targetNodes": [
       "f3_node_003",
@@ -350,7 +349,7 @@
     "title": "F3 Node 20 (standard)",
     "x": 68,
     "y": 16.14,
-    "heading": 0,
+    "heading": 270,
     "panorama": "/assets/360/f3/node_020.jpg",
     "targetNodes": [
       "f3_node_017",
@@ -366,9 +365,9 @@
     "zone": "main_hall",
     "type": "standard",
     "title": "F3 Node 21 (standard)",
-    "x": 64.8,
+    "x": 64.92,
     "y": 16.14,
-    "heading": 0,
+    "heading": 269,
     "panorama": "/assets/360/f3/node_021.jpg",
     "targetNodes": [
       "f3_node_028",
@@ -387,7 +386,7 @@
     "title": "F3 Node 22 (standard)",
     "x": 61.74,
     "y": 16.14,
-    "heading": 0,
+    "heading": 269,
     "panorama": "/assets/360/f3/node_022.jpg",
     "targetNodes": [
       "f3_node_021",
@@ -404,7 +403,7 @@
     "title": "F3 Node 23 (standard)",
     "x": 58.8,
     "y": 16.14,
-    "heading": 0,
+    "heading": 270,
     "panorama": "/assets/360/f3/node_023.jpg",
     "targetNodes": [
       "f3_node_022",
@@ -421,9 +420,9 @@
     "zone": "main_hall",
     "type": "standard",
     "title": "F3 Node 24 (standard)",
-    "x": 56,
+    "x": 55.94,
     "y": 16.14,
-    "heading": 0,
+    "heading": 270,
     "panorama": "/assets/360/f3/node_024.jpg",
     "targetNodes": [
       "f3_node_023",
@@ -440,7 +439,7 @@
     "title": "F3 Node 25 (standard)",
     "x": 56,
     "y": 12.14,
-    "heading": 0,
+    "heading": 270,
     "panorama": "/assets/360/f3/node_025.jpg",
     "targetNodes": [
       "f3_node_010",
@@ -458,7 +457,7 @@
     "title": "F3 Node 26 (standard)",
     "x": 58.8,
     "y": 12.14,
-    "heading": 0,
+    "heading": 270,
     "panorama": "/assets/360/f3/node_026.jpg",
     "targetNodes": [
       "f3_node_025",
@@ -476,7 +475,7 @@
     "title": "F3 Node 27 (standard)",
     "x": 61.6,
     "y": 12.14,
-    "heading": 0,
+    "heading": 270,
     "panorama": "/assets/360/f3/node_027.jpg",
     "targetNodes": [
       "f3_node_026",
@@ -494,7 +493,7 @@
     "title": "F3 Node 28 (standard)",
     "x": 64.8,
     "y": 12.14,
-    "heading": 0,
+    "heading": 273,
     "panorama": "/assets/360/f3/node_028.jpg",
     "targetNodes": [
       "f3_node_027",
@@ -513,7 +512,7 @@
     "title": "F3 Node 29 (standard)",
     "x": 48.8,
     "y": 20.14,
-    "heading": 0,
+    "heading": 270,
     "panorama": "/assets/360/f3/node_029.jpg",
     "targetNodes": [
       "f3_node_012",
@@ -530,7 +529,7 @@
     "title": "F3 Node 30 (standard)",
     "x": 43.6,
     "y": 20.14,
-    "heading": 0,
+    "heading": 270,
     "panorama": "/assets/360/f3/node_030.jpg",
     "targetNodes": [
       "f3_node_029",
@@ -545,9 +544,9 @@
     "zone": "main_hall",
     "type": "standard",
     "title": "F3 Node 31 (standard)",
-    "x": 38.8,
-    "y": 20.14,
-    "heading": 0,
+    "x": 38.86,
+    "y": 20.2,
+    "heading": 270,
     "panorama": "/assets/360/f3/node_031.jpg",
     "targetNodes": [
       "f3_node_030",
@@ -564,7 +563,7 @@
     "title": "F3 Node 32 (standard)",
     "x": 33.2,
     "y": 20.14,
-    "heading": 0,
+    "heading": 272,
     "panorama": "/assets/360/f3/node_032.jpg",
     "targetNodes": [
       "f3_node_031",
@@ -598,7 +597,7 @@
     "title": "F3 Node 34 (standard)",
     "x": 28.4,
     "y": 26.54,
-    "heading": 0,
+    "heading": 269,
     "panorama": "/assets/360/f3/node_034.jpg",
     "targetNodes": [
       "f3_node_035",
@@ -616,7 +615,7 @@
     "title": "F3 Node 35 (standard)",
     "x": 32.4,
     "y": 26.54,
-    "heading": 0,
+    "heading": 270,
     "panorama": "/assets/360/f3/node_035.jpg",
     "targetNodes": [
       "f3_node_036",
@@ -631,9 +630,9 @@
     "zone": "main_hall",
     "type": "standard",
     "title": "F3 Node 36 (standard)",
-    "x": 36,
+    "x": 35.92,
     "y": 26.54,
-    "heading": 0,
+    "heading": 271,
     "panorama": "/assets/360/f3/node_036.jpg",
     "targetNodes": [
       "f3_node_037",
@@ -651,7 +650,7 @@
     "title": "F3 Node 37 (standard)",
     "x": 39.6,
     "y": 26.54,
-    "heading": 0,
+    "heading": 270,
     "panorama": "/assets/360/f3/node_037.jpg",
     "targetNodes": [
       "f3_node_038",
@@ -668,7 +667,7 @@
     "title": "F3 Node 38 (standard)",
     "x": 43.6,
     "y": 26.54,
-    "heading": 0,
+    "heading": 270,
     "panorama": "/assets/360/f3/node_038.jpg",
     "targetNodes": [
       "f3_node_039",
@@ -685,7 +684,7 @@
     "title": "F3 Node 39 (standard)",
     "x": 47.2,
     "y": 26.54,
-    "heading": 0,
+    "heading": 270,
     "panorama": "/assets/360/f3/node_039.jpg",
     "targetNodes": [
       "f3_node_040",
@@ -702,7 +701,7 @@
     "title": "F3 Node 40 (standard)",
     "x": 52.4,
     "y": 26.54,
-    "heading": 0,
+    "heading": 271,
     "panorama": "/assets/360/f3/node_040.jpg",
     "targetNodes": [
       "f3_node_012",
@@ -721,7 +720,7 @@
     "title": "F3 Node 41 (standard)",
     "x": 22.4,
     "y": 26.54,
-    "heading": 0,
+    "heading": 359,
     "panorama": "/assets/360/f3/node_041.jpg",
     "targetNodes": [
       "f3_node_034",
@@ -755,7 +754,7 @@
     "title": "F3 Node 43 (standard)",
     "x": 23.6,
     "y": 36.94,
-    "heading": 0,
+    "heading": 87,
     "panorama": "/assets/360/f3/node_043.jpg",
     "targetNodes": [
       "f3_node_042",
@@ -773,7 +772,7 @@
     "title": "F3 Node 44 (standard)",
     "x": 28.4,
     "y": 36.94,
-    "heading": 0,
+    "heading": 89,
     "panorama": "/assets/360/f3/node_044.jpg",
     "targetNodes": [
       "f3_node_043",
@@ -790,7 +789,7 @@
     "title": "F3 Node 45 (standard)",
     "x": 36,
     "y": 36.94,
-    "heading": 0,
+    "heading": 88,
     "panorama": "/assets/360/f3/node_045.jpg",
     "targetNodes": [
       "f3_node_048",
@@ -808,7 +807,7 @@
     "title": "F3 Node 46 (standard)",
     "x": 42.4,
     "y": 36.94,
-    "heading": 0,
+    "heading": 91,
     "panorama": "/assets/360/f3/node_046.jpg",
     "targetNodes": [
       "f3_node_045",
@@ -825,7 +824,7 @@
     "title": "F3 Node 47 (standard)",
     "x": 49.2,
     "y": 36.94,
-    "heading": 0,
+    "heading": 90,
     "panorama": "/assets/360/f3/node_047.jpg",
     "targetNodes": [
       "f3_node_046",
@@ -859,7 +858,7 @@
     "type": "standard",
     "title": "F3 Node 49 (standard)",
     "x": 44.4,
-    "y": 40.14,
+    "y": 39.74,
     "heading": 0,
     "panorama": "/assets/360/f3/node_049.jpg",
     "targetNodes": [
@@ -928,8 +927,8 @@
     "type": "standard",
     "title": "F3 Node 53 (standard)",
     "x": 40.8,
-    "y": 49.34,
-    "heading": 0,
+    "y": 49.42,
+    "heading": 272,
     "panorama": "/assets/360/f3/node_053.jpg",
     "targetNodes": [
       "f3_node_052",
@@ -947,7 +946,7 @@
     "title": "F3 Node 54 (standard)",
     "x": 34.4,
     "y": 49.34,
-    "heading": 0,
+    "heading": 270,
     "panorama": "/assets/360/f3/node_054.jpg",
     "targetNodes": [
       "f3_node_055",
@@ -962,9 +961,9 @@
     "zone": "main_hall",
     "type": "standard",
     "title": "F3 Node 55 (standard)",
-    "x": 29.6,
+    "x": 29.68,
     "y": 49.34,
-    "heading": 0,
+    "heading": 269,
     "panorama": "/assets/360/f3/node_055.jpg",
     "targetNodes": [
       "f3_node_056",
@@ -981,7 +980,7 @@
     "title": "F3 Node 56 (standard)",
     "x": 25.6,
     "y": 49.34,
-    "heading": 0,
+    "heading": 272,
     "panorama": "/assets/360/f3/node_056.jpg",
     "targetNodes": [
       "f3_node_057",
@@ -998,7 +997,7 @@
     "title": "F3 Node 57 (standard)",
     "x": 22.8,
     "y": 49.34,
-    "heading": 0,
+    "heading": 181,
     "panorama": "/assets/360/f3/node_057.jpg",
     "targetNodes": [
       "f3_node_058",
@@ -1015,7 +1014,7 @@
     "title": "F3 Node 58 (standard)",
     "x": 22.8,
     "y": 45.74,
-    "heading": 0,
+    "heading": 181,
     "panorama": "/assets/360/f3/node_058.jpg",
     "targetNodes": [
       "f3_node_067",
@@ -1033,7 +1032,7 @@
     "title": "F3 Node 59 (standard)",
     "x": 25.6,
     "y": 45.74,
-    "heading": 0,
+    "heading": 268,
     "panorama": "/assets/360/f3/node_059.jpg",
     "targetNodes": [
       "f3_node_060",
@@ -1050,7 +1049,7 @@
     "title": "F3 Node 60 (standard)",
     "x": 29.6,
     "y": 45.74,
-    "heading": 0,
+    "heading": 270,
     "panorama": "/assets/360/f3/node_060.jpg",
     "targetNodes": [
       "f3_node_061",
@@ -1067,7 +1066,7 @@
     "title": "F3 Node 61 (standard)",
     "x": 34.4,
     "y": 45.74,
-    "heading": 0,
+    "heading": 269,
     "panorama": "/assets/360/f3/node_061.jpg",
     "targetNodes": [
       "f3_node_062",
@@ -1084,7 +1083,7 @@
     "title": "F3 Node 62 (standard)",
     "x": 40.8,
     "y": 45.74,
-    "heading": 0,
+    "heading": 270,
     "panorama": "/assets/360/f3/node_062.jpg",
     "targetNodes": [
       "f3_node_053",
@@ -1101,7 +1100,7 @@
     "type": "standard",
     "title": "F3 Node 63 (standard)",
     "x": 40.8,
-    "y": 42.14,
+    "y": 42.54,
     "heading": 0,
     "panorama": "/assets/360/f3/node_063.jpg",
     "targetNodes": [
@@ -1120,7 +1119,7 @@
     "title": "F3 Node 64 (standard)",
     "x": 34.4,
     "y": 42.54,
-    "heading": 0,
+    "heading": 269,
     "panorama": "/assets/360/f3/node_064.jpg",
     "targetNodes": [
       "f3_node_063",
@@ -1137,7 +1136,7 @@
     "title": "F3 Node 65 (standard)",
     "x": 30,
     "y": 42.54,
-    "heading": 0,
+    "heading": 269,
     "panorama": "/assets/360/f3/node_065.jpg",
     "targetNodes": [
       "f3_node_066",
@@ -1153,8 +1152,8 @@
     "type": "standard",
     "title": "F3 Node 66 (standard)",
     "x": 25.6,
-    "y": 42.54,
-    "heading": 0,
+    "y": 42.62,
+    "heading": 267,
     "panorama": "/assets/360/f3/node_066.jpg",
     "targetNodes": [
       "f3_node_067",
@@ -1171,7 +1170,7 @@
     "title": "F3 Node 67 (standard)",
     "x": 22.8,
     "y": 42.54,
-    "heading": 0,
+    "heading": 178,
     "panorama": "/assets/360/f3/node_067.jpg",
     "targetNodes": [
       "f3_node_068",
@@ -1189,12 +1188,12 @@
     "title": "F3 Node 68 (standard)",
     "x": 22.8,
     "y": 39.74,
-    "heading": 0,
+    "heading": 175,
     "panorama": "/assets/360/f3/node_068.jpg",
     "targetNodes": [
       "f3_node_069",
-      "f3_node_043",
-      "f3_node_067"
+      "f3_node_067",
+      "f3_node_043"
     ],
     "targetFloor": null,
     "targetNodeId": null
@@ -1207,7 +1206,7 @@
     "title": "F3 Node 69 (standard)",
     "x": 25.6,
     "y": 39.74,
-    "heading": 0,
+    "heading": 270,
     "panorama": "/assets/360/f3/node_069.jpg",
     "targetNodes": [
       "f3_node_070",
@@ -1224,7 +1223,7 @@
     "title": "F3 Node 70 (standard)",
     "x": 30,
     "y": 39.74,
-    "heading": 0,
+    "heading": 270,
     "panorama": "/assets/360/f3/node_070.jpg",
     "targetNodes": [
       "f3_node_071",
@@ -1241,7 +1240,7 @@
     "title": "F3 Node 71 (standard)",
     "x": 34.4,
     "y": 39.74,
-    "heading": 0,
+    "heading": 270,
     "panorama": "/assets/360/f3/node_071.jpg",
     "targetNodes": [
       "f3_node_072",
@@ -1257,7 +1256,7 @@
     "type": "standard",
     "title": "F3 Node 72 (standard)",
     "x": 40.8,
-    "y": 40.14,
+    "y": 39.74,
     "heading": 0,
     "panorama": "/assets/360/f3/node_072.jpg",
     "targetNodes": [
@@ -1293,7 +1292,7 @@
     "title": "F3 Node 74 (standard)",
     "x": 51.6,
     "y": 36.94,
-    "heading": 0,
+    "heading": 90,
     "panorama": "/assets/360/f3/node_074.jpg",
     "targetNodes": [
       "f3_node_047",
@@ -1345,7 +1344,7 @@
     "title": "F3 Node 77 (standard)",
     "x": 58.8,
     "y": 42.14,
-    "heading": 0,
+    "heading": 90,
     "panorama": "/assets/360/f3/node_077.jpg",
     "targetNodes": [
       "f3_node_078",
@@ -1362,7 +1361,7 @@
     "title": "F3 Node 78 (standard)",
     "x": 61.6,
     "y": 42.14,
-    "heading": 0,
+    "heading": 90,
     "panorama": "/assets/360/f3/node_078.jpg",
     "targetNodes": [
       "f3_node_079",
@@ -1377,9 +1376,9 @@
     "zone": "main_hall",
     "type": "standard",
     "title": "F3 Node 79 (standard)",
-    "x": 64.8,
+    "x": 64.88,
     "y": 42.14,
-    "heading": 0,
+    "heading": 90,
     "panorama": "/assets/360/f3/node_079.jpg",
     "targetNodes": [
       "f3_node_080",
@@ -1396,7 +1395,7 @@
     "title": "F3 Node 80 (standard)",
     "x": 69.6,
     "y": 42.14,
-    "heading": 0,
+    "heading": 90,
     "panorama": "/assets/360/f3/node_080.jpg",
     "targetNodes": [
       "f3_node_079"
@@ -1463,7 +1462,7 @@
     "title": "F3 Node 84 (standard)",
     "x": 55.2,
     "y": 26.54,
-    "heading": 0,
+    "heading": 93,
     "panorama": "/assets/360/f3/node_084.jpg",
     "targetNodes": [
       "f3_node_040",
@@ -1498,7 +1497,7 @@
     "title": "F3 Node 86 (standard)",
     "x": 64.8,
     "y": 26.54,
-    "heading": 0,
+    "heading": 90,
     "panorama": "/assets/360/f3/node_086.jpg",
     "targetNodes": [
       "f3_node_085",
@@ -1516,7 +1515,7 @@
     "title": "F3 Node 87 (standard)",
     "x": 70.8,
     "y": 26.14,
-    "heading": 0,
+    "heading": 90,
     "panorama": "/assets/360/f3/node_087.jpg",
     "targetNodes": [
       "f3_node_086",
@@ -1534,7 +1533,7 @@
     "title": "F3 Node 88 (standard)",
     "x": 75.2,
     "y": 25.74,
-    "heading": 0,
+    "heading": 90,
     "panorama": "/assets/360/f3/node_088.jpg",
     "targetNodes": [
       "f3_node_087",
@@ -1554,7 +1553,7 @@
     "title": "F3 Node 89 (standard)",
     "x": 75.2,
     "y": 17.74,
-    "heading": 0,
+    "heading": 180,
     "panorama": "/assets/360/f3/node_089.jpg",
     "targetNodes": [
       "f3_node_090"
@@ -1570,7 +1569,7 @@
     "title": "F3 Node 90 (standard)",
     "x": 75.2,
     "y": 22.14,
-    "heading": 0,
+    "heading": 357,
     "panorama": "/assets/360/f3/node_090.jpg",
     "targetNodes": [
       "f3_node_088",
@@ -1602,9 +1601,9 @@
     "zone": "main_hall",
     "type": "standard",
     "title": "F3 Node 92 (standard)",
-    "x": 82.4,
+    "x": 82.48,
     "y": 25.74,
-    "heading": 0,
+    "heading": 180,
     "panorama": "/assets/360/f3/node_092.jpg",
     "targetNodes": [
       "f3_node_088",
@@ -1641,7 +1640,7 @@
     "title": "F3 Node 94 (standard)",
     "x": 90.4,
     "y": 24.94,
-    "heading": 0,
+    "heading": 180,
     "panorama": "/assets/360/f3/node_094.jpg",
     "targetNodes": [
       "f3_node_093",
@@ -1659,7 +1658,7 @@
     "title": "F3 Node 95 (standard)",
     "x": 90.4,
     "y": 21.34,
-    "heading": 0,
+    "heading": 180,
     "panorama": "/assets/360/f3/node_095.jpg",
     "targetNodes": [
       "f3_node_094",
@@ -1676,7 +1675,7 @@
     "title": "F3 Node 96 (standard)",
     "x": 90.4,
     "y": 18.54,
-    "heading": 0,
+    "heading": 180,
     "panorama": "/assets/360/f3/node_096.jpg",
     "targetNodes": [
       "f3_node_095",
@@ -1693,7 +1692,7 @@
     "title": "F3 Node 97 (standard)",
     "x": 86.8,
     "y": 18.54,
-    "heading": 0,
+    "heading": 180,
     "panorama": "/assets/360/f3/node_097.jpg",
     "targetNodes": [
       "f3_node_096",
@@ -1710,7 +1709,7 @@
     "title": "F3 Node 98 (standard)",
     "x": 86.8,
     "y": 21.34,
-    "heading": 0,
+    "heading": 180,
     "panorama": "/assets/360/f3/node_098.jpg",
     "targetNodes": [
       "f3_node_097",
@@ -1726,8 +1725,8 @@
     "type": "standard",
     "title": "F3 Node 99 (standard)",
     "x": 89.2,
-    "y": 31.74,
-    "heading": 0,
+    "y": 30.14,
+    "heading": 3,
     "panorama": "/assets/360/f3/node_099.jpg",
     "targetNodes": [
       "f3_node_094",
@@ -1745,7 +1744,7 @@
     "title": "F3 Node 100 (standard)",
     "x": 84.8,
     "y": 30.14,
-    "heading": 0,
+    "heading": 90,
     "panorama": "/assets/360/f3/node_100.jpg",
     "targetNodes": [
       "f3_node_099",
@@ -1763,7 +1762,7 @@
     "title": "F3 Node 101 (standard)",
     "x": 81.2,
     "y": 30.14,
-    "heading": 0,
+    "heading": 90,
     "panorama": "/assets/360/f3/node_101.jpg",
     "targetNodes": [
       "f3_node_100",
@@ -1780,7 +1779,7 @@
     "title": "F3 Node 102 (standard)",
     "x": 78,
     "y": 30.14,
-    "heading": 0,
+    "heading": 90,
     "panorama": "/assets/360/f3/node_102.jpg",
     "targetNodes": [
       "f3_node_101",
@@ -1798,7 +1797,7 @@
     "title": "F3 Node 103 (standard)",
     "x": 72.8,
     "y": 30.14,
-    "heading": 0,
+    "heading": 90,
     "panorama": "/assets/360/f3/node_103.jpg",
     "targetNodes": [
       "f3_node_102",
@@ -1816,7 +1815,7 @@
     "title": "F3 Node 104 (standard)",
     "x": 69.2,
     "y": 30.14,
-    "heading": 0,
+    "heading": 90,
     "panorama": "/assets/360/f3/node_104.jpg",
     "targetNodes": [
       "f3_node_103",
@@ -1833,7 +1832,7 @@
     "title": "F3 Node 105 (standard)",
     "x": 64.8,
     "y": 30.14,
-    "heading": 0,
+    "heading": 90,
     "panorama": "/assets/360/f3/node_105.jpg",
     "targetNodes": [
       "f3_node_086",
@@ -1851,7 +1850,7 @@
     "title": "F3 Node 106 (standard)",
     "x": 64.8,
     "y": 33.74,
-    "heading": 0,
+    "heading": 91,
     "panorama": "/assets/360/f3/node_106.jpg",
     "targetNodes": [
       "f3_node_105",
@@ -1868,7 +1867,7 @@
     "title": "F3 Node 107 (standard)",
     "x": 69.2,
     "y": 33.74,
-    "heading": 0,
+    "heading": 90,
     "panorama": "/assets/360/f3/node_107.jpg",
     "targetNodes": [
       "f3_node_106",
@@ -1885,7 +1884,7 @@
     "title": "F3 Node 108 (standard)",
     "x": 72.8,
     "y": 33.74,
-    "heading": 0,
+    "heading": 92,
     "panorama": "/assets/360/f3/node_108.jpg",
     "targetNodes": [
       "f3_node_107",
@@ -1902,7 +1901,7 @@
     "title": "F3 Node 109 (standard)",
     "x": 75.2,
     "y": 33.74,
-    "heading": 0,
+    "heading": 90,
     "panorama": "/assets/360/f3/node_109.jpg",
     "targetNodes": [
       "f3_node_132",
@@ -1920,7 +1919,7 @@
     "title": "F3 Node 110 (standard)",
     "x": 78,
     "y": 33.74,
-    "heading": 0,
+    "heading": 90,
     "panorama": "/assets/360/f3/node_110.jpg",
     "targetNodes": [
       "f3_node_130",
@@ -1938,7 +1937,7 @@
     "title": "F3 Node 111 (standard)",
     "x": 81.2,
     "y": 33.74,
-    "heading": 0,
+    "heading": 91,
     "panorama": "/assets/360/f3/node_111.jpg",
     "targetNodes": [
       "f3_node_127",
@@ -1956,7 +1955,7 @@
     "title": "F3 Node 112 (standard)",
     "x": 84,
     "y": 33.74,
-    "heading": 0,
+    "heading": 91,
     "panorama": "/assets/360/f3/node_112.jpg",
     "targetNodes": [
       "f3_node_111",
@@ -1974,7 +1973,7 @@
     "title": "F3 Node 113 (standard)",
     "x": 86.4,
     "y": 33.74,
-    "heading": 0,
+    "heading": 85,
     "panorama": "/assets/360/f3/node_113.jpg",
     "targetNodes": [
       "f3_node_112",
@@ -1992,7 +1991,7 @@
     "title": "F3 Node 114 (standard)",
     "x": 90,
     "y": 34.94,
-    "heading": 0,
+    "heading": 13,
     "panorama": "/assets/360/f3/node_114.jpg",
     "targetNodes": [
       "f3_node_113",
@@ -2044,7 +2043,7 @@
     "title": "F3 Node 117 (standard)",
     "x": 91.2,
     "y": 50.14,
-    "heading": 0,
+    "heading": 283,
     "panorama": "/assets/360/f3/node_117.jpg",
     "targetNodes": [
       "f3_node_116",
@@ -2061,7 +2060,7 @@
     "title": "F3 Node 118 (standard)",
     "x": 89.2,
     "y": 50.14,
-    "heading": 0,
+    "heading": 274,
     "panorama": "/assets/360/f3/node_118.jpg",
     "targetNodes": [
       "f3_node_117",
@@ -2078,7 +2077,7 @@
     "title": "F3 Node 119 (standard)",
     "x": 86.4,
     "y": 50.14,
-    "heading": 0,
+    "heading": 180,
     "panorama": "/assets/360/f3/node_119.jpg",
     "targetNodes": [
       "f3_node_118",
@@ -2096,7 +2095,7 @@
     "title": "F3 Node 120 (standard)",
     "x": 84,
     "y": 50.14,
-    "heading": 0,
+    "heading": 180,
     "panorama": "/assets/360/f3/node_120.jpg",
     "targetNodes": [
       "f3_node_119",
@@ -2113,7 +2112,7 @@
     "title": "F3 Node 121 (standard)",
     "x": 84,
     "y": 46.54,
-    "heading": 0,
+    "heading": 180,
     "panorama": "/assets/360/f3/node_121.jpg",
     "targetNodes": [
       "f3_node_120",
@@ -2130,7 +2129,7 @@
     "title": "F3 Node 122 (standard)",
     "x": 86.4,
     "y": 46.54,
-    "heading": 0,
+    "heading": 180,
     "panorama": "/assets/360/f3/node_122.jpg",
     "targetNodes": [
       "f3_node_123",
@@ -2147,7 +2146,7 @@
     "title": "F3 Node 123 (standard)",
     "x": 86.4,
     "y": 42.94,
-    "heading": 0,
+    "heading": 180,
     "panorama": "/assets/360/f3/node_123.jpg",
     "targetNodes": [
       "f3_node_126",
@@ -2164,7 +2163,7 @@
     "title": "F3 Node 124 (standard)",
     "x": 84,
     "y": 42.94,
-    "heading": 0,
+    "heading": 180,
     "panorama": "/assets/360/f3/node_124.jpg",
     "targetNodes": [
       "f3_node_121",
@@ -2181,7 +2180,7 @@
     "title": "F3 Node 125 (standard)",
     "x": 84,
     "y": 38.94,
-    "heading": 0,
+    "heading": 180,
     "panorama": "/assets/360/f3/node_125.jpg",
     "targetNodes": [
       "f3_node_124",
@@ -2198,7 +2197,7 @@
     "title": "F3 Node 126 (standard)",
     "x": 86.4,
     "y": 39.34,
-    "heading": 0,
+    "heading": 180,
     "panorama": "/assets/360/f3/node_126.jpg",
     "targetNodes": [
       "f3_node_113",
@@ -2232,7 +2231,7 @@
     "title": "F3 Node 128 (standard)",
     "x": 81.2,
     "y": 49.34,
-    "heading": 0,
+    "heading": 270,
     "panorama": "/assets/360/f3/node_128.jpg",
     "targetNodes": [
       "f3_node_129",
@@ -2249,7 +2248,7 @@
     "title": "F3 Node 129 (standard)",
     "x": 78,
     "y": 49.34,
-    "heading": 0,
+    "heading": 270,
     "panorama": "/assets/360/f3/node_129.jpg",
     "targetNodes": [
       "f3_node_131",
@@ -2284,7 +2283,7 @@
     "title": "F3 Node 131 (standard)",
     "x": 75.2,
     "y": 49.34,
-    "heading": 0,
+    "heading": 360,
     "panorama": "/assets/360/f3/node_131.jpg",
     "targetNodes": [
       "f3_node_132",
@@ -2323,6 +2322,20 @@
     "targetNodes": [
       "f3_node_076"
     ],
+    "targetFloor": null,
+    "targetNodeId": null
+  },
+  {
+    "id": "f3_node_134",
+    "floor": "f3",
+    "zone": "main_hall",
+    "type": "standard",
+    "title": "F3 Node 134 (standard)",
+    "x": 31.19,
+    "y": 45.69,
+    "heading": 0,
+    "panorama": "/assets/360/f3/node_134.jpg",
+    "targetNodes": [],
     "targetFloor": null,
     "targetNodeId": null
   }
