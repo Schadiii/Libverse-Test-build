@@ -11,6 +11,7 @@
     "panorama": "/assets/360/f3/node_001.jpg",
     "targetNodes": [
       "f3_node_002"
+
     ],
     "targetFloor": null,
     "targetNodeId": null
@@ -27,7 +28,14 @@
     "panorama": "/assets/360/f3/node_002.jpg",
     "targetNodes": [
       "f3_node_001",
-      "f3_node_003"
+      "f3_node_003",
+      {
+        "targetNodeId": "f4_node_001",
+        "targetFloor": "f4",
+        "label": "Go Up",
+        "yaw": 180,
+        "pitch": -5
+      }
     ],
     "targetFloor": null,
     "targetNodeId": null
